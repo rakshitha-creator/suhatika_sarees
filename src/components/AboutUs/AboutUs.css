@@ -1,0 +1,58 @@
+.about-us {
+  background: #e8ddee;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1.5rem;
+  position: relative;
+  z-index: 2;
+  box-sizing: border-box;
+}
+
+.about-us__inner {
+  max-width: 720px;
+  width: 100%;
+  text-align: center;
+}
+
+.about-us__heading {
+  margin: 0 0 1.25rem;
+  font-size: clamp(1.85rem, 4vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.25;
+  color: #800080;
+  letter-spacing: -0.02em;
+}
+
+.about-us__text {
+  margin: 0 auto 1.5rem;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: #4a4458;
+  max-width: 640px;
+}
+
+.about-us__cta {
+  display: inline-block;
+  padding: 0.875rem 2.25rem;
+  background: #800080;
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.about-us__cta:hover {
+  background: #6b216b;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.about-us__cta:active {
+  transform: translateY(0);
+}
