@@ -1,6 +1,6 @@
 .hero {
   position: relative;
-  min-height: 105vh;
+  min-height: 115vh;
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -34,7 +34,7 @@
   position: absolute;
   left: 160px;
   top: 230px;
-  right: 585px;
+  right: 500px;
   bottom: 177px;
   display: flex;
   flex-direction: column;
@@ -54,11 +54,11 @@
 
 .hero__title {
   position: absolute;
-  top: 60px;
+  top: 20px;
   left: 40px;
   right: 40px;
   bottom: 116px;
-  font-size: 45px;
+  font-size: 40px;
   font-weight: 300;
   line-height: 1.2;
   color: #ffffff;
@@ -71,7 +71,7 @@
   display: inline-block;
   padding: 12.5px 30px;
   position: absolute;
-  top: 250px;
+  top: 190px;
   left: 40px;
   background: linear-gradient(90deg, #5d157e, #7b2cbf);
   color: #ffffff;
