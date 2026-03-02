@@ -1,6 +1,6 @@
 .hero {
   position: relative;
-  min-height: 115vh;
+  min-height: 110vh;
   box-sizing: border-box;
   overflow: hidden;
 }
