@@ -1,0 +1,199 @@
+.collection-pages {
+  min-height: 100vh;
+  background: #fff;
+}
+
+.collection-pages__main {
+  min-height: 100vh;
+}
+
+/* ── Hero section (matches Home hero design) ── */
+.collection-pages__hero {
+  position: relative;
+  min-height: 110vh;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.collection-pages__discover {
+  background: #f8f7f5;
+  padding: 3.5rem 0 4.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.collection-pages__discover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: #f3f2f0;
+  background-image:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.18) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.08) 75%, rgba(0, 0, 0, 0.08)),
+    linear-gradient(rgba(0, 0, 0, 0.18) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.08) 75%, rgba(0, 0, 0, 0.08));
+  background-size: 180px 180px; /* Bigger checker boxes */
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.collection-pages__discover-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.collection-pages__discover-title {
+  margin: 0;
+  font-size: clamp(2rem, 3.2vw, 3rem);
+  font-weight: 500;
+  color: #800080;
+  letter-spacing: -0.02em;
+}
+
+.collection-pages__discover-text {
+  margin: 1.6rem auto 0;
+  max-width: 980px;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #1f2937;
+}
+
+.collection-pages__discover-text + .collection-pages__discover-text {
+  margin-top: 1.25rem;
+}
+
+.collection-pages__hero-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('/image.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(2px);
+  transform: scale(1.02);
+  z-index: 0;
+}
+
+.collection-pages__hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.15);
+  z-index: 1;
+}
+
+.collection-pages__hero-card {
+  position: absolute;
+  left: 160px;
+  top: 230px;
+  right: 500px;
+  bottom: 177px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem 3.5rem;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.221),
+    rgba(255, 255, 255, 0.12)
+  );
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  z-index: 2;
+}
+
+.collection-pages__hero-title {
+  position: absolute;
+  top: 20px;
+  left: 40px;
+  right: 40px;
+  bottom: 116px;
+  font-size: 40px;
+  font-weight: 300;
+  line-height: 1.2;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+  letter-spacing: 0.03em;
+}
+
+.collection-pages__hero-cta {
+  display: inline-block;
+  padding: 12.5px 30px;
+  position: absolute;
+  top: 190px;
+  left: 40px;
+  background: linear-gradient(90deg, #5d157e, #7b2cbf);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(93, 21, 126, 0.6);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.collection-pages__hero-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(93, 21, 126, 0.7);
+}
+
+.collection-pages__hero-cta:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(93, 21, 126, 0.5);
+}
+
+@media (max-width: 900px) {
+  .collection-pages__hero {
+    min-height: 80vh;
+    padding: 6rem 1.5rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .collection-pages__hero-card {
+    position: relative;
+    left: auto;
+    right: auto;
+    top: auto;
+    bottom: auto;
+    width: 100%;
+    max-width: 520px;
+    padding: 2.25rem 1.75rem;
+  }
+
+  .collection-pages__hero-title {
+    position: static;
+    font-size: 2.2rem;
+    margin: 0 0 1.5rem;
+  }
+
+  .collection-pages__hero-cta {
+    position: static;
+    margin-top: 0.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .collection-pages__hero {
+    padding: 5.5rem 1.25rem 2.5rem;
+  }
+
+  .collection-pages__hero-title {
+    font-size: 1.8rem;
+  }
+
+  .collection-pages__hero-card {
+    padding: 1.75rem 1.4rem;
+  }
+
+  .collection-pages__discover {
+    padding: 2.75rem 0 3.5rem;
+  }
+}

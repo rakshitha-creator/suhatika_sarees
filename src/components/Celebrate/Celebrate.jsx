@@ -8,7 +8,7 @@ export default function Celebrate() {
           <h2 className="celebrate__title">Celebrate Every Occasion in Silk</h2>
           <p className="celebrate__subtitle">Discover sarees that make every moment unforgettable.</p>
         </div>
-        <a href="/collections" className="celebrate__cta">View All Collections</a>
+        <a href="#/collections" className="celebrate__cta">View All Collections</a>
       </div>
     </section>
   );

@@ -40,14 +40,14 @@ export default function Header() {
   return (
     <header className="header">
       <div className="header__inner">
-        <a href="/" className="header__brand">
+        <a href="#/" className="header__brand">
           Suhatika Sarees
         </a>
         <nav className="header__nav">
-          <a href="/" className="header__link header__link--active">Home</a>
-          <a href="/collections" className="header__link">Collections</a>
-          <a href="/about" className="header__link">About Us</a>
-          <a href="/contact" className="header__link">Contact Us</a>
+          <a href="#/" className="header__link">Home</a>
+          <a href="#/collections" className="header__link">Collections</a>
+          <a href="#/about" className="header__link">About Us</a>
+          <a href="#/contact" className="header__link">Contact Us</a>
         </nav>
         <div className="header__actions">
           <div className="header__search-wrap">

@@ -10,7 +10,7 @@ export default function Hero() {
           <br />
           Elegance
         </h1>
-        <a href="/collections" className="hero__cta">
+        <a href="#/collections" className="hero__cta">
           Explore Collections
         </a>
       </div>

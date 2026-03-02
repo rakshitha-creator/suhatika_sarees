@@ -102,7 +102,7 @@ export default function Collections() {
       <div className="collections__inner">
         <div className="collections__header">
           <h2 className="collections__title">Our Signature Collections</h2>
-          <a href="/collections" className="collections__view-all">View All</a>
+          <a href="#/collections" className="collections__view-all">View All</a>
         </div>
         <CarouselRow scrollRef={scrollRef1} rowId={1} onScroll={scroll} />
         <CarouselRow scrollRef={scrollRef2} rowId={2} onScroll={scroll} />
