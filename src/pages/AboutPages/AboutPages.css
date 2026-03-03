@@ -1,14 +1,14 @@
-.home {
+.about-pages {
   position: relative;
   overflow-x: hidden;
 }
 
-.home .new-arrival__carousel-wrap {
+.about-pages .new-arrival__carousel-wrap {
   justify-content: center;
   gap: 3rem;
 }
 
-.home .new-arrival__carousel {
+.about-pages .new-arrival__carousel {
   flex: 0 1 auto;
   width: min(1216px, 100%);
   margin: 0 auto;
@@ -17,35 +17,35 @@
   padding: 0.25rem 0;
 }
 
-.home .new-arrival__card {
+.about-pages .new-arrival__card {
   background: rgba(255, 255, 255, 0.65);
   width: clamp(200px, 22vw, 240px);
 }
 
-.home .new-arrival {
+.about-pages .new-arrival {
   padding: 2.25rem 0 3rem;
 }
 
-.home .new-arrival__card-image-wrap {
+.about-pages .new-arrival__card-image-wrap {
   padding: 8px 8px 0;
   background: transparent;
 }
 
-.home .collections {
+.about-pages .collections {
   padding: 2.25rem 0 3rem;
 }
 
-.home .collections__carousel {
+.about-pages .collections__carousel {
   gap: 2.5rem;
   justify-content: flex-start;
 }
 
-.home .collections__card {
+.about-pages .collections__card {
   width: clamp(200px, 22vw, 240px);
   background: rgba(255, 255, 255, 0.6);
 }
 
-.home .collections__card-image-wrap {
+.about-pages .collections__card-image-wrap {
   padding: 8px 8px 0;
   background: transparent;
 }

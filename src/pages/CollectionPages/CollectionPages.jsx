@@ -1,6 +1,7 @@
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import Collections from '../../components/Collections/Collections';
+import NewArrival from '../../components/NewArrival/NewArrival';
 import './CollectionPages.css';
 
 export default function CollectionPages() {
@@ -37,6 +38,18 @@ export default function CollectionPages() {
             </p>
           </div>
         </section>
+
+        <section className="collection-pages__cta">
+          <div className="collection-pages__cta-inner">
+            <div className="collection-pages__cta-content">
+              <h2 className="collection-pages__cta-title">Elegance woven into every thread.</h2>
+              <p className="collection-pages__cta-text">Explore the newest additions to our premium silk collection.</p>
+            </div>
+            <a href="#/collections" className="collection-pages__cta-btn">View All Collections</a>
+          </div>
+        </section>
+
+        <NewArrival />
       </main>
       <Footer />
     </div>

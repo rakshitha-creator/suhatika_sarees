@@ -20,6 +20,8 @@
   padding: 3.5rem 0 4.5rem;
   position: relative;
   overflow: hidden;
+  width: 100%;
+  min-height: 603px;
 }
 
 .collection-pages__discover::before {
@@ -50,6 +52,7 @@
   font-weight: 500;
   color: #800080;
   letter-spacing: -0.02em;
+  
 }
 
 .collection-pages__discover-text {
@@ -58,6 +61,10 @@
   font-size: 1rem;
   line-height: 1.75;
   color: #1f2937;
+}
+
+.collection-pages__discover-text:first-of-type {
+  margin-top: 200px;
 }
 
 .collection-pages__discover-text + .collection-pages__discover-text {
@@ -89,7 +96,7 @@
   left: 160px;
   top: 230px;
   right: 500px;
-  bottom: 177px;
+  bottom: 150px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -148,6 +155,130 @@
   box-shadow: 0 4px 12px rgba(93, 21, 126, 0.5);
 }
 
+.collection-pages__cta {
+  background: #e9d7f0;
+  min-height: 400px;
+  display: flex;
+  justify-content: center;
+  padding: 85px 0 44px;
+}
+
+.collection-pages__cta-inner {
+  width: min(1276px, calc(100% - 3rem));
+  height: 250px;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 37px;
+  position: relative;
+}
+
+.collection-pages__cta-content {
+  max-width: 720px;
+  align-self: flex-start;
+  position: absolute;
+  top: 10px;
+  left: 82px;
+}
+
+.collection-pages__cta-title {
+  margin: 0;
+  font-size: clamp(2.2rem, 3.5vw, 3.1rem);
+  font-weight: 500;
+  color: #5d157e;
+  letter-spacing: -0.02em;
+}
+
+.collection-pages__cta-text {
+  margin: 1.25rem 0 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #111827;
+  max-width: 360px;
+}
+
+.collection-pages__cta-btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 208px;
+  height: 46px;
+  padding: 15px 30px;
+  border-radius: 30px;
+  background: #5d157e;
+  border: 1px solid #5d157e;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow: 0 10px 22px rgba(93, 21, 126, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  margin-left: auto;
+}
+
+.collection-pages__cta-btn:hover {
+  background: #4b0f66;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(93, 21, 126, 0.3);
+}
+
+.collection-pages__cta-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 8px 18px rgba(93, 21, 126, 0.22);
+}
+
+.collection-pages .new-arrival__carousel-wrap {
+  gap: 3rem;
+  justify-content: center;
+}
+
+.collection-pages .new-arrival__carousel {
+  flex: 0 1 auto;
+  width: min(1216px, 100%);
+  margin: 0 auto;
+  gap: 2rem;
+  padding: 0.25rem 0;
+  justify-content: center;
+}
+
+.collection-pages .new-arrival__card {
+  width: clamp(200px, 22vw, 240px);
+}
+
+.collection-pages .new-arrival__card-image-wrap {
+  padding: 6px 6px 0;
+}
+
+.collection-pages .new-arrival__card-image {
+  object-fit: cover;
+  object-position: center;
+}
+
+.collection-pages .collections {
+  padding: 2.25rem 0 2.75rem;
+}
+
+.collection-pages .collections__card {
+  width: clamp(200px, 22vw, 240px);
+  background: rgba(255, 255, 255, 0.52);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.collection-pages .collections__carousel {
+  gap: 2.5rem;
+}
+
+.collection-pages .collections__card-image-wrap {
+  padding: 7px 7px 0;
+  background: transparent;
+}
+
+.collection-pages .collections__card-details {
+  background: transparent;
+}
+
 @media (max-width: 900px) {
   .collection-pages__hero {
     min-height: 80vh;
@@ -195,5 +326,18 @@
 
   .collection-pages__discover {
     padding: 2.75rem 0 3.5rem;
+  }
+
+  .collection-pages__cta {
+    padding: 3.25rem 0;
+  }
+
+  .collection-pages__cta-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .collection-pages__cta-text {
+    max-width: none;
   }
 }

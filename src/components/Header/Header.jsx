@@ -1,5 +1,7 @@
 import './Header.css';
 
+import { useState } from 'react';
+
 const SearchIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="11" cy="11" r="8" />
@@ -36,7 +38,30 @@ const MenuIcon = () => (
   </svg>
 );
 
+const collectionsPreview = [
+  { title: 'Valentine Special', image: '/image.png', href: '#/collections' },
+  { title: 'Cops', image: '/image.png', href: '#/collections' },
+  { title: 'Winter Collection', image: '/image.png', href: '#/collections' },
+  { title: 'Blooming Racing Club', image: '/image.png', href: '#/collections' },
+];
+
 export default function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const menuLeftLinks = [
+    { label: 'New Arrivals', href: '#/collections' },
+    { label: 'Winter collection 2025', href: '#/collections' },
+    { label: 'Basics', href: '#/collections' },
+    { label: 'Blooming Racing Club', href: '#/collections' },
+    { label: 'Iconics', href: '#/collections' },
+  ];
+
+  const menuGroups = [
+    { title: 'Top', items: ['T-Shirts', 'Polos', 'Shirts', 'Sweatshirts', 'Hoodies', 'Jackets'] },
+    { title: 'Bottom', items: ['Cargos', 'Jeans', 'Pants', 'Shorts'] },
+    { title: 'Accessories', items: ['Bags', 'Caps'] },
+  ];
+
   return (
     <header className="header">
       <div className="header__inner">
@@ -45,7 +70,21 @@ export default function Header() {
         </a>
         <nav className="header__nav">
           <a href="#/" className="header__link">Home</a>
-          <a href="#/collections" className="header__link">Collections</a>
+          <div className="header__dropdown">
+            <a href="#/collections" className="header__link">Collections</a>
+            <div className="header__dropdown-panel" role="menu" aria-label="Collections menu">
+              <div className="header__dropdown-strip">
+                {collectionsPreview.map((item) => (
+                  <a key={item.title} href={item.href} className="header__dropdown-card" role="menuitem">
+                    <span className="header__dropdown-thumb" aria-hidden="true">
+                      <img src={item.image} alt="" loading="lazy" />
+                    </span>
+                    <span className="header__dropdown-title">{item.title}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
           <a href="#/about" className="header__link">About Us</a>
           <a href="#/contact" className="header__link">Contact Us</a>
         </nav>
@@ -65,9 +104,58 @@ export default function Header() {
           <button type="button" className="header__icon-btn header__icon-btn--cart" aria-label="Cart">
             <BagIcon />
           </button>
-          <button type="button" className="header__icon-btn header__icon-btn--menu" aria-label="Menu">
+          <button
+            type="button"
+            className="header__icon-btn header__icon-btn--menu"
+            aria-label="Menu"
+            aria-expanded={isMenuOpen}
+            onClick={() => setIsMenuOpen((v) => !v)}
+          >
             <MenuIcon />
           </button>
+        </div>
+      </div>
+
+      <div
+        className={`header__menu-layer ${isMenuOpen ? 'is-open' : ''}`}
+        aria-hidden={!isMenuOpen}
+        onClick={() => setIsMenuOpen(false)}
+      >
+        <div className="header__menu-panel" role="dialog" onClick={(e) => e.stopPropagation()}>
+          <div className="header__menu-inner">
+            <div className="header__menu-left" aria-label="Menu links">
+              {menuLeftLinks.map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className="header__menu-link"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+
+            <div className="header__menu-groups" aria-label="Menu categories">
+              {menuGroups.map((group) => (
+                <div key={group.title} className="header__menu-group">
+                  <div className="header__menu-group-title">{group.title}</div>
+                  <div className="header__menu-pills">
+                    {group.items.map((pill) => (
+                      <a
+                        key={pill}
+                        href="#/collections"
+                        className="header__menu-pill"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {pill}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </header>
