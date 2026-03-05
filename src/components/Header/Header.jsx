@@ -1,6 +1,7 @@
 import './Header.css';
 
 import { useEffect, useRef, useState } from 'react';
+import { getCart } from '../../data/cart';
 
 const SearchIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -24,6 +25,28 @@ export default function Header() {
   const collectionsStripRef = useRef(null);
   const [canScrollCollectionsLeft, setCanScrollCollectionsLeft] = useState(false);
   const [canScrollCollectionsRight, setCanScrollCollectionsRight] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
+
+  const openCart = () => {
+    setIsMenuOpen(false);
+    window.location.hash = '#/cart';
+  };
+
+  useEffect(() => {
+    const compute = () => {
+      const items = getCart();
+      const count = items.reduce((sum, item) => sum + (item.quantity ?? 0), 0);
+      setCartCount(count);
+    };
+
+    compute();
+    window.addEventListener('cart:change', compute);
+    window.addEventListener('storage', compute);
+    return () => {
+      window.removeEventListener('cart:change', compute);
+      window.removeEventListener('storage', compute);
+    };
+  }, []);
 
   const updateCollectionsScrollState = () => {
     const el = collectionsStripRef.current;
@@ -167,8 +190,9 @@ export default function Header() {
           <button type="button" className="header__icon-btn" aria-label="Account">
             <img src="/user.svg" alt="" aria-hidden="true" width="22" height="22" />
           </button>
-          <button type="button" className="header__icon-btn header__icon-btn--cart" aria-label="Cart">
+          <button type="button" className="header__icon-btn header__icon-btn--cart" aria-label="Cart" onClick={openCart}>
             <img src="/shopping bag.svg" alt="" aria-hidden="true" width="22" height="22" />
+            {cartCount > 0 && <span className="header__cart-badge" aria-hidden="true">{cartCount}</span>}
           </button>
         </div>
       </div>

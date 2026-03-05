@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import './AboutPages.css';
+import { addToCart } from '../../data/cart';
 
 const craftedCollectionProducts = [
   { id: 1, name: 'Silk Saree', price: '2,699', originalPrice: '3,470', images: ['/image.png', '/image.png'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
@@ -35,6 +36,10 @@ function CraftedCollectionCard({ product }) {
   const images = Array.isArray(product.images) && product.images.length ? product.images : ['/image.png'];
   const currentImage = images[imageIndex % images.length];
 
+  const openProduct = () => {
+    window.location.hash = `#/product/${product.id}`;
+  };
+
   const prevImage = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -48,10 +53,15 @@ function CraftedCollectionCard({ product }) {
   };
 
   return (
-    <article className="about-pages__crafted-collections-card">
+    <article className="about-pages__crafted-collections-card" role="link" tabIndex={0} onClick={openProduct}>
       <div className="about-pages__crafted-collections-card-image-wrap">
         <img src={currentImage} alt={product.name} className="about-pages__crafted-collections-card-image" />
-        <button type="button" className="about-pages__crafted-collections-card-wishlist" aria-label="Add to wishlist">
+        <button
+          type="button"
+          className="about-pages__crafted-collections-card-wishlist"
+          aria-label="Add to wishlist"
+          onClick={(e) => e.stopPropagation()}
+        >
           <HeartIcon />
         </button>
         <button
@@ -88,7 +98,15 @@ function CraftedCollectionCard({ product }) {
           <span className="about-pages__crafted-collections-card-price-current">₹ {product.price}/-</span>
           <span className="about-pages__crafted-collections-card-price-original">₹ {product.originalPrice}</span>
         </div>
-        <button type="button" className="about-pages__crafted-collections-card-cart" aria-label="Add to cart">
+        <button
+          type="button"
+          className="about-pages__crafted-collections-card-cart"
+          aria-label="Add to cart"
+          onClick={(e) => {
+            e.stopPropagation();
+            addToCart({ productId: product.id, quantity: 1, color: product.colors?.[0] ?? null });
+          }}
+        >
           <img className="about-pages__crafted-collections-card-cart-icon" src="/shopping bag-add.svg" alt="" />
         </button>
       </div>
@@ -191,6 +209,38 @@ export default function AboutPages() {
               >
                 <ChevronRightIcon />
               </button>
+            </div>
+          </div>
+        </section>
+
+        <section className="about-pages__why" aria-label="Why choose our silk sarees">
+          <div className="about-pages__why-inner">
+            <h2 className="about-pages__why-title">
+              Why Choose Our Silk
+              <br />
+              Sarees?
+            </h2>
+            <p className="about-pages__why-text">
+              We ensure that each product is securely packaged and sealed directly from our production process so that the first time it is
+              opened is by you — our valued customer.
+              <br />
+              From craftsmanship to packaging, every step is handled with care to ensure that your saree reaches you exactly as it was created.
+            </p>
+          </div>
+        </section>
+
+        <section className="about-pages__preserve" aria-label="Preserving the art of silk weaving">
+          <div className="about-pages__preserve-inner">
+            <div className="about-pages__preserve-content">
+              <h2 className="about-pages__preserve-title">Preserving the Art of Silk Weaving</h2>
+              <p className="about-pages__preserve-text">
+                Silk sarees are more than garments — they are living traditions. At Suhatika, we proudly support the heritage of silk weaving by
+                collaborating with skilled artisans who have perfected their craft over generations.
+              </p>
+            </div>
+
+            <div className="about-pages__preserve-actions">
+              <a href="#/collections" className="about-pages__preserve-cta">View All Collections</a>
             </div>
           </div>
         </section>

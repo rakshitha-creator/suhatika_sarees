@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import './Collections.css';
+import { addToCart } from '../../data/cart';
 
 const products = [
   { id: 1, name: 'Silk Saree', price: '2,699', originalPrice: '3,470', images: ['/image.png', '/image.png'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
@@ -33,6 +34,10 @@ function ProductCard({ product, rowId }) {
   const images = Array.isArray(product.images) && product.images.length ? product.images : ['/image.png'];
   const currentImage = images[imageIndex % images.length];
 
+  const openProduct = () => {
+    window.location.hash = `#/product/${product.id}`;
+  };
+
   const prevImage = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -46,10 +51,15 @@ function ProductCard({ product, rowId }) {
   };
 
   return (
-    <article className="collections__card">
+    <article className="collections__card" role="link" tabIndex={0} onClick={openProduct}>
       <div className="collections__card-image-wrap">
         <img src={currentImage} alt={product.name} className="collections__card-image" />
-        <button type="button" className="collections__card-wishlist" aria-label="Add to wishlist">
+        <button
+          type="button"
+          className="collections__card-wishlist"
+          aria-label="Add to wishlist"
+          onClick={(e) => e.stopPropagation()}
+        >
           <HeartIcon />
         </button>
         <button type="button" className="collections__card-arrow collections__card-arrow--left" onClick={prevImage} aria-label="Previous image">
@@ -70,7 +80,15 @@ function ProductCard({ product, rowId }) {
           <span className="collections__card-price-current">₹ {product.price}/-</span>
           <span className="collections__card-price-original">₹ {product.originalPrice}</span>
         </div>
-        <button type="button" className="collections__card-cart" aria-label="Add to cart">
+        <button
+          type="button"
+          className="collections__card-cart"
+          aria-label="Add to cart"
+          onClick={(e) => {
+            e.stopPropagation();
+            addToCart({ productId: product.id, quantity: 1, color: product.colors?.[0] ?? null });
+          }}
+        >
           <img className="collections__card-cart-icon" src="/shopping bag-add.svg" alt="" />
         </button>
       </div>

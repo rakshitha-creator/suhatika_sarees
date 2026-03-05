@@ -4,6 +4,9 @@ import { useEffect, useState } from 'react';
 import CollectionPages from './pages/CollectionPages/CollectionPages';
 import ContactPages from './pages/ContactPages/ContactPages';
 import AboutPages from './pages/AboutPages/AboutPages';
+import ProductDetail from './pages/ProductDetail/ProductDetail';
+import Cart from './pages/Cart/Cart';
+import Checkout from './pages/Checkout/Checkout';
 
 function App() {
   const [hash, setHash] = useState(() => window.location.hash || '#/');
@@ -27,6 +30,19 @@ function App() {
   }, [hash]);
 
   const path = hash.replace(/^#/, '');
+
+  const productMatch = path.match(/^\/product\/(\d+)$/);
+  if (productMatch) {
+    return <ProductDetail productId={productMatch[1]} />;
+  }
+
+  if (path === '/cart') {
+    return <Cart />;
+  }
+
+  if (path === '/checkout') {
+    return <Checkout />;
+  }
 
   if (path === '/collections') {
     return <CollectionPages />;
