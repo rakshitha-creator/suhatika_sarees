@@ -31,17 +31,17 @@
   flex-shrink: 0;
   padding: 0.5rem 1.25rem;
   background: transparent;
-  color: #800080;
+  color: var(--color-primary);
   font-weight: 600;
   font-size: 0.95rem;
   text-decoration: none;
-  border: 2px solid #800080;
+  border: 2px solid var(--color-primary);
   border-radius: 9999px;
   transition: background 0.2s, color 0.2s;
 }
 
 .collections__view-all:hover {
-  background: #800080;
+  background: var(--color-primary);
   color: #fff;
 }
 

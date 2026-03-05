@@ -57,7 +57,7 @@ export default function Footer() {
               </svg>
             </a>
           </div>
-          <p className="footer__credit">Design & Develop With ❤️ by Synapse Digiverse</p>
+          <p className="footer__credit">Design & Developed <span className="footer__credit-brand">Synapse Digiverse</span></p>
         </div>
       </div>
     </footer>

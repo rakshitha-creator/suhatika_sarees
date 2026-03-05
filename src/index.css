@@ -6,6 +6,13 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  --color-primary: #5D157E;
+  --color-primary-dark: #4B0F66;
+  --color-primary-rgb: 93, 21, 126;
+}
+
+html {
+  overflow-x: hidden;
 }
 
 *,
@@ -18,6 +25,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 #root {

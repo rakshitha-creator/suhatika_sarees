@@ -50,7 +50,7 @@
   margin: 0;
   font-size: clamp(2rem, 3.2vw, 3rem);
   font-weight: 500;
-  color: #800080;
+  color: var(--color-primary);
   letter-spacing: -0.02em;
   
 }
@@ -133,7 +133,7 @@
   position: absolute;
   top: 190px;
   left: 40px;
-  background: linear-gradient(90deg, #5d157e, #7b2cbf);
+  background: linear-gradient(90deg, var(--color-primary), var(--color-primary-dark));
   color: #ffffff;
   font-weight: 600;
   font-size: 1rem;

@@ -1,51 +1,488 @@
 .about-pages {
-  position: relative;
   overflow-x: hidden;
+  background-color: #f3f3f3;
 }
 
-.about-pages .new-arrival__carousel-wrap {
+.about-pages .header__inner {
+  background: #f3f3f3;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.about-pages__main {
+  padding-top: 7.5rem;
+}
+
+.about-pages__hero {
+  background: #f3f3f3;
+  min-height: 330px;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 3rem;
+  padding: 5rem 1.5rem;
 }
 
-.about-pages .new-arrival__carousel {
-  flex: 0 1 auto;
-  width: min(1216px, 100%);
+.about-pages__hero-inner {
+  width: min(1000px, 100%);
+  text-align: center;
+}
+
+.about-pages__hero-title {
+  margin: 0;
+  font-size: clamp(2.1rem, 3.4vw, 3rem);
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--color-primary);
+  letter-spacing: -0.02em;
+}
+
+.about-pages__hero-subtitle {
+  margin: 2.25rem 0 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #1a1a1a;
+}
+
+.about-pages__banner {
+  width: min(1440px, 100%);
   margin: 0 auto;
+  overflow: hidden;
+  background: #000;
+}
+
+.about-pages__banner-image {
+  width: 100%;
+  height: 631px;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .about-pages__banner-image {
+    height: clamp(240px, 50vw, 520px);
+  }
+}
+
+.about-pages__story {
+  background: #f3f3f3;
+  padding: 4rem 0 3rem;
+  min-height: 360px;
+}
+
+.about-pages__story-inner {
+  width: 1258px;
+  max-width: calc(100% - 200px);
+  margin-left: 100px;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  align-items: stretch;
+}
+
+.about-pages__story-text {
+  width: 100%;
+  max-width: 1258px;
+  color: #1a1a1a;
+  font-size: 1.25rem;
+  line-height: 1.25;
+}
+
+.about-pages__story-text p {
+  margin: 0 0 0.6rem;
+}
+
+.about-pages__story-text p:last-child {
+  margin-bottom: 0;
+}
+
+.about-pages__story-cta {
+  width: 208px;
+  height: 46px;
+  padding: 15px 30px;
+  background: var(--color-primary);
+  border: 1px solid rgba(147, 45, 194, 0.21);
+  border-radius: 30px;
+  color: #fff;
+  font-weight: 500;
+  font-size: 1rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
-  gap: 2.5rem;
+  align-self: flex-end;
+}
+
+.about-pages__story-cta:hover {
+  background: var(--color-primary-dark);
+  color: #fff;
+}
+
+@media (max-width: 900px) {
+  .about-pages__story-inner {
+    width: min(1258px, 100%);
+    max-width: calc(100% - 3rem);
+    margin: 0 auto;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .about-pages__story-cta {
+    align-self: flex-start;
+    margin-top: 0;
+  }
+}
+
+.about-pages__crafted {
+  width: min(1440px, 100%);
+  height: 699px;
+  margin: 0 auto;
+  background: #E6D3F0;
+  display: flex;
+}
+
+.about-pages__crafted-inner {
+  width: 100%;
+  height: 100%;
+  padding: 90px 120px 70px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.about-pages__crafted-title {
+  margin: 0;
+  color: var(--color-primary);
+  font-weight: 500;
+  font-size: 44px;
+  line-height: 1.1;
+}
+
+.about-pages__crafted-text {
+  margin: 0;
+  align-self: center;
+  justify-self: end;
+  text-align: right;
+  max-width: 900px;
+  color: #1a1a1a;
+  font-size: 1.5rem;
+  line-height: 1.65;
+}
+
+.about-pages__crafted-cta {
+  justify-self: end;
+  align-self: end;
+  width: 180px;
+  height: 46px;
+  padding: 15px 30px;
+  background: var(--color-primary);
+  border: 1px solid rgba(147, 45, 194, 0.21);
+  border-radius: 30px;
+  color: #fff;
+  font-weight: 500;
+  font-size: 1rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.about-pages__crafted-cta:hover {
+  background: var(--color-primary-dark);
+  color: #fff;
+}
+
+@media (max-width: 900px) {
+  .about-pages__crafted {
+    height: auto;
+    min-height: 560px;
+  }
+
+  .about-pages__crafted-inner {
+    padding: 64px 24px 56px;
+    row-gap: 2rem;
+  }
+
+  .about-pages__crafted-title {
+    font-size: 34px;
+  }
+
+  .about-pages__crafted-text {
+    max-width: 100%;
+    font-size: 0.98rem;
+  }
+
+  .about-pages__crafted-cta {
+    justify-self: start;
+  }
+}
+
+.about-pages__crafted-collections {
+  background: #f3f3f3;
+  padding: 3.25rem 0 4rem;
+  --about-crafted-card-w: 220px;
+  --about-crafted-card-gap: 26px;
+}
+
+.about-pages__crafted-collections-inner {
+  width: min(1440px, 100%);
+  margin: 0 auto;
+  padding: 0 2.5rem;
+}
+
+.about-pages__crafted-collections-title {
+  margin: 0 0 1.75rem;
+  font-size: 2rem;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.about-pages__crafted-collections-carousel-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.about-pages__crafted-collections-carousel {
+  flex: 1;
+  display: flex;
+  gap: 3rem;
+  width: calc((4 * var(--about-crafted-card-w)) + (3 * var(--about-crafted-card-gap)));
+  max-width: 100%;
+  margin: 0 auto;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   padding: 0.25rem 0;
 }
 
-.about-pages .new-arrival__card {
+.about-pages__crafted-collections-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.about-pages__crafted-collections-nav {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 50%;
+  color: #6b7280;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.about-pages__crafted-collections-nav:hover {
+  background: #fff;
+  color: #1a1a1a;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.about-pages__crafted-collections-nav--left {
+  left: auto;
+}
+
+.about-pages__crafted-collections-nav--right {
+  right: auto;
+}
+
+.about-pages__crafted-collections-card {
+  flex-shrink: 0;
+  width: var(--about-crafted-card-w);
+  min-height: 350px;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  gap: 6px;
+}
+
+.about-pages__crafted-collections-card-image-wrap {
+  position: relative;
+  height: 270px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.about-pages__crafted-collections-card-arrow {
+  position: absolute;
+  top: 50%;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: rgba(255, 255, 255, 0.65);
-  width: clamp(200px, 22vw, 240px);
+  border: none;
+  border-radius: 50%;
+  color: #374151;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(-50%) scale(0.88);
+  transition: opacity 0.35s ease, transform 0.35s ease, background 0.25s ease;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
-.about-pages .new-arrival {
-  padding: 2.25rem 0 3rem;
+.about-pages__crafted-collections-card-image-wrap:hover .about-pages__crafted-collections-card-arrow {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
 }
 
-.about-pages .new-arrival__card-image-wrap {
-  padding: 8px 8px 0;
+.about-pages__crafted-collections-card-arrow--left {
+  left: 16px;
+}
+
+.about-pages__crafted-collections-card-arrow--right {
+  right: 16px;
+}
+
+.about-pages__crafted-collections-card-arrow:hover {
+  background: rgba(255, 255, 255, 0.92);
+  transform: translateY(-50%) scale(1.06);
+}
+
+.about-pages__crafted-collections-card-arrow:active {
+  transform: translateY(-50%) scale(0.96);
+}
+
+.about-pages__crafted-collections-card-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  object-fit: contain;
+  object-position: top center;
+  display: block;
+}
+
+.about-pages__crafted-collections-card-wishlist {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
 }
 
-.about-pages .collections {
-  padding: 2.25rem 0 3rem;
+.about-pages__crafted-collections-card-details {
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  gap: 6px;
+  align-items: center;
 }
 
-.about-pages .collections__carousel {
-  gap: 2.5rem;
-  justify-content: flex-start;
+.about-pages__crafted-collections-card-name {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #000;
+  grid-column: 1;
+  grid-row: 1;
 }
 
-.about-pages .collections__card {
-  width: clamp(200px, 22vw, 240px);
-  background: rgba(255, 255, 255, 0.6);
+.about-pages__crafted-collections-card-colors {
+  display: flex;
+  grid-column: 2;
+  grid-row: 1;
 }
 
-.about-pages .collections__card-image-wrap {
-  padding: 8px 8px 0;
+.about-pages__crafted-collections-card-swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #e5e5e5;
+  margin-left: -6px;
+}
+
+.about-pages__crafted-collections-card-swatch:first-child {
+  margin-left: 0;
+}
+
+.about-pages__crafted-collections-card-price {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.about-pages__crafted-collections-card-price-current {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #000;
+}
+
+.about-pages__crafted-collections-card-price-original {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  text-decoration: line-through;
+}
+
+.about-pages__crafted-collections-card-cart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
   background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  grid-column: 2;
+  grid-row: 2;
+  align-self: end;
+}
+
+.about-pages__crafted-collections-card-cart-icon {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .about-pages__crafted-collections-title {
+    font-size: 1.65rem;
+  }
+
+  .about-pages__crafted-collections {
+    --about-crafted-card-w: 240px;
+    --about-crafted-card-gap: 12px;
+  }
+
+  .about-pages__crafted-collections-nav {
+    display: none;
+  }
+
+  .about-pages__crafted-collections-card-arrow {
+    display: none;
+  }
+
+  .about-pages__crafted-collections-card {
+    width: var(--about-crafted-card-w);
+  }
 }

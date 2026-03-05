@@ -1,13 +1,13 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import './Collections.css';
 
 const products = [
-  { id: 1, name: 'Silk Saree', price: '2,699', originalPrice: '3,470', colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
-  { id: 2, name: 'Silk Saree', price: '2,699', originalPrice: '3,470', colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
-  { id: 3, name: 'Silk Saree', price: '2,699', originalPrice: '3,470', colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
-  { id: 4, name: 'Silk Saree', price: '2,699', originalPrice: '3,470', colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
-  { id: 5, name: 'Silk Saree', price: '2,699', originalPrice: '3,470', colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
-  { id: 6, name: 'Silk Saree', price: '2,699', originalPrice: '3,470', colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
+  { id: 1, name: 'Silk Saree', price: '2,699', originalPrice: '3,470', images: ['/image.png', '/image.png'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
+  { id: 2, name: 'Silk Saree', price: '2,699', originalPrice: '3,470', images: ['/image.png', '/image.png'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
+  { id: 3, name: 'Silk Saree', price: '2,699', originalPrice: '3,470', images: ['/image.png', '/image.png'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
+  { id: 4, name: 'Silk Saree', price: '2,699', originalPrice: '3,470', images: ['/image.png', '/image.png'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
+  { id: 5, name: 'Silk Saree', price: '2,699', originalPrice: '3,470', images: ['/image.png', '/image.png'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
+  { id: 6, name: 'Silk Saree', price: '2,699', originalPrice: '3,470', images: ['/image.png', '/image.png'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
 ];
 
 const HeartIcon = () => (
@@ -28,39 +28,61 @@ const ChevronRightIcon = () => (
   </svg>
 );
 
-const CarouselRow = ({ scrollRef, rowId, onScroll }) => (
+function ProductCard({ product, rowId }) {
+  const [imageIndex, setImageIndex] = useState(0);
+  const images = Array.isArray(product.images) && product.images.length ? product.images : ['/image.png'];
+  const currentImage = images[imageIndex % images.length];
+
+  const prevImage = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setImageIndex((idx) => (idx - 1 + images.length) % images.length);
+  };
+
+  const nextImage = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setImageIndex((idx) => (idx + 1) % images.length);
+  };
+
+  return (
+    <article className="collections__card">
+      <div className="collections__card-image-wrap">
+        <img src={currentImage} alt={product.name} className="collections__card-image" />
+        <button type="button" className="collections__card-wishlist" aria-label="Add to wishlist">
+          <HeartIcon />
+        </button>
+        <button type="button" className="collections__card-arrow collections__card-arrow--left" onClick={prevImage} aria-label="Previous image">
+          <ChevronLeftIcon />
+        </button>
+        <button type="button" className="collections__card-arrow collections__card-arrow--right" onClick={nextImage} aria-label="Next image">
+          <ChevronRightIcon />
+        </button>
+      </div>
+      <div className="collections__card-details">
+        <h3 className="collections__card-name">{product.name}</h3>
+        <div className="collections__card-colors">
+          {product.colors.map((color, i) => (
+            <span key={`${rowId}-${product.id}-color-${i}`} className="collections__card-swatch" style={{ backgroundColor: color }} aria-hidden="true" />
+          ))}
+        </div>
+        <div className="collections__card-price">
+          <span className="collections__card-price-current">₹ {product.price}/-</span>
+          <span className="collections__card-price-original">₹ {product.originalPrice}</span>
+        </div>
+        <button type="button" className="collections__card-cart" aria-label="Add to cart">
+          <img className="collections__card-cart-icon" src="/shopping bag-add.svg" alt="" />
+        </button>
+      </div>
+    </article>
+  );
+}
+
+const CarouselRow = ({ scrollRef, rowId }) => (
   <div className="collections__carousel-wrap">
     <div className="collections__carousel" ref={scrollRef}>
       {products.map((product) => (
-        <article key={`${rowId}-${product.id}`} className="collections__card">
-          <div className="collections__card-image-wrap">
-            <img src="/image.png" alt={product.name} className="collections__card-image" />
-            <button type="button" className="collections__card-wishlist" aria-label="Add to wishlist">
-              <HeartIcon />
-            </button>
-            <button type="button" className="collections__card-arrow collections__card-arrow--left" onClick={() => onScroll(scrollRef, 'left')} aria-label="Previous">
-              <ChevronLeftIcon />
-            </button>
-            <button type="button" className="collections__card-arrow collections__card-arrow--right" onClick={() => onScroll(scrollRef, 'right')} aria-label="Next">
-              <ChevronRightIcon />
-            </button>
-          </div>
-            <div className="collections__card-details">
-              <h3 className="collections__card-name">{product.name}</h3>
-              <div className="collections__card-colors">
-                {product.colors.map((color, i) => (
-                  <span key={i} className="collections__card-swatch" style={{ backgroundColor: color }} aria-hidden="true" />
-                ))}
-              </div>
-              <div className="collections__card-price">
-                <span className="collections__card-price-current">₹ {product.price}/-</span>
-                <span className="collections__card-price-original">₹ {product.originalPrice}</span>
-              </div>
-              <button type="button" className="collections__card-cart" aria-label="Add to cart">
-                <img className="collections__card-cart-icon" src="/shopping bag-add.svg" alt="" />
-              </button>
-            </div>
-          </article>
+        <ProductCard key={`${rowId}-${product.id}`} product={product} rowId={rowId} />
         ))}
     </div>
   </div>
@@ -70,12 +92,6 @@ export default function Collections() {
   const scrollRef1 = useRef(null);
   const scrollRef2 = useRef(null);
 
-  const scroll = (ref, direction) => {
-    if (!ref?.current) return;
-    const amount = 320;
-    ref.current.scrollBy({ left: direction === 'left' ? -amount : amount, behavior: 'smooth' });
-  };
-
   return (
     <section className="collections">
       <div className="collections__inner">
@@ -83,8 +99,8 @@ export default function Collections() {
           <h2 className="collections__title">Our Signature Collections</h2>
           <a href="#/collections" className="collections__view-all">View All</a>
         </div>
-        <CarouselRow scrollRef={scrollRef1} rowId={1} onScroll={scroll} />
-        <CarouselRow scrollRef={scrollRef2} rowId={2} onScroll={scroll} />
+        <CarouselRow scrollRef={scrollRef1} rowId={1} />
+        <CarouselRow scrollRef={scrollRef2} rowId={2} />
       </div>
     </section>
   );

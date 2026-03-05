@@ -1,6 +1,6 @@
 import './Header.css';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const SearchIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -9,51 +9,67 @@ const SearchIcon = () => (
   </svg>
 );
 
-const HeartIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-  </svg>
-);
-
-const UserIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-    <circle cx="12" cy="7" r="4" />
-  </svg>
-);
-
-const BagIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
-    <path d="M3 6h18" />
-    <path d="M16 10a4 4 0 0 1-8 0" />
-  </svg>
-);
-
-const MenuIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="4" x2="20" y1="12" y2="12" />
-    <line x1="4" x2="20" y1="6" y2="6" />
-    <line x1="4" x2="20" y1="18" y2="18" />
-  </svg>
-);
-
 const collectionsPreview = [
-  { title: 'Valentine Special', image: '/image.png', href: '#/collections' },
-  { title: 'Cops', image: '/image.png', href: '#/collections' },
-  { title: 'Winter Collection', image: '/image.png', href: '#/collections' },
-  { title: 'Blooming Racing Club', image: '/image.png', href: '#/collections' },
+  { title: 'Product Label', image: '/image.png', href: '#/collections' },
+  { title: 'Product Label', image: '/image.png', href: '#/collections' },
+  { title: 'Product Label', image: '/image.png', href: '#/collections' },
+  { title: 'Product Label', image: '/image.png', href: '#/collections' },
+  { title: 'Product Label', image: '/image.png', href: '#/collections' },
+  { title: 'Product Label', image: '/image.png', href: '#/collections' },
+  { title: 'Product Label', image: '/image.png', href: '#/collections' },
 ];
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const collectionsStripRef = useRef(null);
+  const [canScrollCollectionsLeft, setCanScrollCollectionsLeft] = useState(false);
+  const [canScrollCollectionsRight, setCanScrollCollectionsRight] = useState(false);
+
+  const updateCollectionsScrollState = () => {
+    const el = collectionsStripRef.current;
+    if (!el) return;
+
+    const maxScrollLeft = Math.max(0, el.scrollWidth - el.clientWidth);
+    const epsilon = 5;
+    setCanScrollCollectionsLeft(el.scrollLeft > epsilon);
+    setCanScrollCollectionsRight(el.scrollLeft < maxScrollLeft - epsilon);
+  };
+
+  useEffect(() => {
+    const el = collectionsStripRef.current;
+    if (!el) return;
+
+    const onScroll = () => updateCollectionsScrollState();
+    el.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', updateCollectionsScrollState);
+
+    const raf = window.requestAnimationFrame(() => updateCollectionsScrollState());
+
+    return () => {
+      el.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', updateCollectionsScrollState);
+      window.cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  const scrollCollectionsStrip = (direction) => {
+    const el = collectionsStripRef.current;
+    if (!el) return;
+
+    const amount = Math.max(260, Math.floor(el.clientWidth * 0.7));
+    el.scrollBy({ left: direction * amount, behavior: 'smooth' });
+
+    window.requestAnimationFrame(() => updateCollectionsScrollState());
+    window.setTimeout(() => updateCollectionsScrollState(), 220);
+    window.setTimeout(() => updateCollectionsScrollState(), 520);
+    window.setTimeout(() => updateCollectionsScrollState(), 920);
+  };
 
   const menuLeftLinks = [
-    { label: 'New Arrivals', href: '#/collections' },
-    { label: 'Winter collection 2025', href: '#/collections' },
-    { label: 'Basics', href: '#/collections' },
-    { label: 'Blooming Racing Club', href: '#/collections' },
-    { label: 'Iconics', href: '#/collections' },
+    { label: 'Home', href: '#/' },
+    { label: 'Collections', href: '#/collections' },
+    { label: 'About Us', href: '#/about' },
+    { label: 'Contact Us', href: '#/contact' },
   ];
 
   const menuGroups = [
@@ -65,23 +81,73 @@ export default function Header() {
   return (
     <header className="header">
       <div className="header__inner">
+        <button
+          type="button"
+          className="header__icon-btn header__icon-btn--menu"
+          aria-label="Menu"
+          aria-expanded={isMenuOpen}
+          onClick={() => setIsMenuOpen((v) => !v)}
+        >
+          <img src="/menu-line-horizontal.svg" alt="" aria-hidden="true" width="22" height="22" />
+        </button>
         <a href="#/" className="header__brand">
           Suhatika Sarees
         </a>
         <nav className="header__nav">
           <a href="#/" className="header__link">Home</a>
-          <div className="header__dropdown">
+          <div
+            className="header__dropdown"
+            onMouseEnter={() => {
+              window.requestAnimationFrame(() => updateCollectionsScrollState());
+            }}
+          >
             <a href="#/collections" className="header__link">Collections</a>
             <div className="header__dropdown-panel" role="menu" aria-label="Collections menu">
-              <div className="header__dropdown-strip">
-                {collectionsPreview.map((item) => (
-                  <a key={item.title} href={item.href} className="header__dropdown-card" role="menuitem">
-                    <span className="header__dropdown-thumb" aria-hidden="true">
-                      <img src={item.image} alt="" loading="lazy" />
-                    </span>
-                    <span className="header__dropdown-title">{item.title}</span>
-                  </a>
-                ))}
+              <div className="header__dropdown-carousel">
+                {canScrollCollectionsLeft && (
+                  <button
+                    type="button"
+                    className="header__dropdown-arrow header__dropdown-arrow--left"
+                    aria-label="Scroll left"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      scrollCollectionsStrip(-1);
+                    }}
+                  >
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M15 18l-6-6 6-6" />
+                    </svg>
+                  </button>
+                )}
+
+                <div className="header__dropdown-strip" ref={collectionsStripRef}>
+                  {collectionsPreview.map((item, idx) => (
+                    <a key={`${item.title}-${idx}`} href={item.href} className="header__dropdown-card" role="menuitem">
+                      <span className="header__dropdown-thumb" aria-hidden="true">
+                        <img src={item.image} alt="" loading="lazy" />
+                      </span>
+                      <span className="header__dropdown-title">{item.title}</span>
+                    </a>
+                  ))}
+                </div>
+
+                {canScrollCollectionsRight && (
+                  <button
+                    type="button"
+                    className="header__dropdown-arrow header__dropdown-arrow--right"
+                    aria-label="Scroll right"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      scrollCollectionsStrip(1);
+                    }}
+                  >
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M9 6l6 6-6 6" />
+                    </svg>
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -96,22 +162,13 @@ export default function Header() {
             </span>
           </div>
           <button type="button" className="header__icon-btn" aria-label="Wishlist">
-            <HeartIcon />
+            <img src="/love.svg" alt="" aria-hidden="true" width="22" height="22" />
           </button>
           <button type="button" className="header__icon-btn" aria-label="Account">
-            <UserIcon />
+            <img src="/user.svg" alt="" aria-hidden="true" width="22" height="22" />
           </button>
           <button type="button" className="header__icon-btn header__icon-btn--cart" aria-label="Cart">
-            <BagIcon />
-          </button>
-          <button
-            type="button"
-            className="header__icon-btn header__icon-btn--menu"
-            aria-label="Menu"
-            aria-expanded={isMenuOpen}
-            onClick={() => setIsMenuOpen((v) => !v)}
-          >
-            <MenuIcon />
+            <img src="/shopping bag.svg" alt="" aria-hidden="true" width="22" height="22" />
           </button>
         </div>
       </div>
