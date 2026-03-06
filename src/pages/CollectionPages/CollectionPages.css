@@ -75,8 +75,8 @@
   position: absolute;
   inset: 0;
   background-image: url('/bg-2-collections.PNG');
-  background-size: cover;
-  background-position: center;
+  background-size: 100% auto;
+  background-position: center top;
   background-repeat: no-repeat;
   filter: none;
   transform: scale(1.02);
@@ -96,7 +96,7 @@
   left: 160px;
   top: 230px;
   right: 500px;
-  bottom: 150px;
+  bottom: 170px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -305,6 +305,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .collection-pages__hero-bg {
+    background-size: cover;
+    background-position: center;
   }
 
   .collection-pages__hero-card {
