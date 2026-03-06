@@ -93,6 +93,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex: 1 1 auto;
 }
 
 .collections__card-image {
@@ -178,6 +179,7 @@
   grid-template-rows: auto auto;
   gap: 4px 16px;
   align-items: center;
+  margin-top: auto;
 }
 
 .collections__card-name {
@@ -187,13 +189,6 @@
   color: #000;
   grid-column: 1;
   grid-row: 1;
-}
-
-.collections__card-colors {
-  display: flex;
-  grid-column: 2;
-  grid-row: 1;
-  align-self: center;
 }
 
 .collections__card-price {
@@ -241,33 +236,6 @@
   width: 20px;
   height: 20px;
   display: block;
-}
-
-.collections__card-swatch {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  border: 2px solid #e5e5e5;
-  margin-left: -6px;
-  position: relative;
-  z-index: 1;
-}
-
-.collections__card-swatch:first-child {
-  margin-left: 0;
-  z-index: 4;
-}
-
-.collections__card-swatch:nth-child(2) {
-  z-index: 3;
-}
-
-.collections__card-swatch:nth-child(3) {
-  z-index: 2;
-}
-
-.collections__card-swatch:nth-child(4) {
-  z-index: 1;
 }
 
 @media (max-width: 1024px) {

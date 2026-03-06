@@ -1,0 +1,13 @@
+{
+  "name": "suhatika-sarees-server",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "seed": "node ./scripts/seed.js"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.0.2",
+    "suhatika-sarees": "file:.."
+  }
+}

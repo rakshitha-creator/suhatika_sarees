@@ -1,0 +1,22 @@
+export const websiteProducts = [
+  { id: 'newarrivals_1', name: 'Vintage Majantha Saree with Teal Blue Border', price: '2,799', originalPrice: '4,999', images: ['/new-1.PNG', '/new-side-1.jpeg', '/new-side-2.jpeg', '/new-side-3.jpeg', '/new-side-4.jpeg'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
+  { id: 'newarrivals_2', name: 'Vintage Royal Blue Saree with Pink Border', price: '2,799', originalPrice: '4,999', images: ['/new-2.PNG', '/new-side-2-1.jpeg', '/new-side-2-2.jpeg', '/new-side-2-3.jpeg', '/new-side-2-4.jpeg'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
+  { id: 'newarrivals_3', name: 'Vintage Royal Purple Saree with Sky Blue Border', price: '2,799', originalPrice: '4,999', images: ['/new-3.PNG', '/new-side-3-1.jpeg', '/new-side-3-2.jpeg', '/new-side-3-3.jpeg', '/new-side-3-4.jpeg', '/new-side-3-5.jpeg'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
+  { id: 'newarrivals_4', name: 'Vintage Majantha Saree with Teal Blue Border', price: '2,799', originalPrice: '4,999', images: ['/new-4.PNG', '/new-side-4-1.jpeg', '/new-side-4-2.jpeg', '/new-side-4-3.jpeg', '/new-side-4-4.jpeg'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
+  { id: 'newarrivals_5', name: 'Vintage Rust Orange Saree with Chocolate Border', price: '2,799', originalPrice: '4,999', images: ['/new-5.PNG', '/new-side-5-1.jpeg', '/new-side-5-2.jpeg', '/new-side-5-3.jpeg', '/new-side-5-4.jpeg'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
+  { id: 'collections_1', name: 'Tissue BabyPink Saree With Green Border', price: '2,499', originalPrice: '4,699', images: ['/collection-1.PNG', '/collection-1-1.jpeg', '/collection-1-2.jpeg', '/collection-1-3.jpeg', '/collection-1-4.jpeg', '/collection-1-5.jpeg'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
+  { id: 'collections_2', name: 'Tissue Coral Peach Saree With Teal Blue Border', price: '2,499', originalPrice: '4,699', images: ['/collection-2.PNG', '/collection-2-1.jpeg','/collection-2-2.jpeg', '/collection-2-3.jpeg','/collection-2-4.jpeg'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
+  { id: 'collections_3', name: 'Tissue Olive Green  Saree With Wine Purple Border', price: '2,499', originalPrice: '4,699', images: ['/collection-3.PNG', '/collection-3-1.jpeg', '/collection-3-2.jpeg', '/collection-3-3.jpeg', '/collection-3-4.jpeg'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
+  { id: 'collections_4', name: 'Tissue BabyPink Saree With Green Border', price: '2,499', originalPrice: '4,699', images: ['/collection-4.PNG', '/collection-4-1.jpeg', '/collection-4-2.jpeg', '/collection-4-3.jpeg', '/collection-4-4.jpeg'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
+  { id: 'collections_5', name: 'Tissue See Green Saree With Red Border ', price: '2,499', originalPrice: '4,699', images: ['/collection-5.PNG', '/collection-5-1.jpeg', '/collection-5-2.jpeg', '/collection-5-3.jpeg', '/collection-5-4.jpeg', '/collection-5-5.jpeg'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
+  { id: 'collections_6', name: 'Tissue Plain Gray Colour Saree With Mustard Border', price: '2,499', originalPrice: '4,699', images: ['/collection-6.PNG'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
+  { id: 'collections_7', name: 'Tissue Munti Colour Saree With Pink Border', price: '2,499', originalPrice: '4,699', images: ['/collection-7.PNG'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
+  { id: 'collections_8', name: 'Tissue Sea Green Saree With Pink Border ', price: '2,499', originalPrice: '4,699', images: ['/collection-8.PNG'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
+  { id: 'collections_9', name: 'Tissue Soft Blush Pink Saree With Wine Purple Border', price: '2,499', originalPrice: '4,699', images: ['/collection-9.PNG'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
+  { id: 'collections_10', name: 'Soft Silk Rust colour saree with Coffee Brown Blouse', price: '2,499', originalPrice: '4,699', images: ['/collection-10.PNG'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
+  { id: 'collections_11', name: 'Tissue SeaGreen  Saree With Pink Border ', price: '2,499', originalPrice: '4,699', images: ['/collection-11.PNG'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
+];
+
+export function getWebsiteProductById(id) {
+  return websiteProducts.find((p) => String(p.id) === String(id));
+}

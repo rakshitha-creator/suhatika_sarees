@@ -1,6 +1,7 @@
 .hero {
   position: relative;
-  min-height: 100vh;
+  height: 630px;
+  width: 100%;
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -8,12 +9,12 @@
 .hero__bg {
   position: absolute;
   inset: 0;
-  background-image: url('/image.png');
+  background-image: url('/hero-bg.JPEG');
   background-size: cover;
-  background-position: center;
+  background-position: 78% 18%;
   background-repeat: no-repeat;
-  filter: blur(2px);
-  transform: scale(1.02);
+  filter: none;
+  transform: none;
   z-index: 0;
 }
 
@@ -21,7 +22,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.15);
+  background: transparent;
   z-index: 1;
 }
 
@@ -33,16 +34,16 @@
 .hero__card {
   position: absolute;
   left: 160px;
-  top: 230px;
+  top: 200px;
   right: 500px;
-  bottom: 95px;
+  bottom: 130px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding: 3rem 3.5rem;
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.221),
+    #ffffff1c,
     rgba(255, 255, 255, 0.12)
   );
   backdrop-filter: blur(2px);
@@ -98,7 +99,8 @@
 
 @media (max-width: 900px) {
   .hero {
-    min-height: 80vh;
+    height: auto;
+    min-height: 630px;
     padding: 6rem 1.5rem 3rem;
     display: flex;
     align-items: center;

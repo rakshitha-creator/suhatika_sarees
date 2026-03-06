@@ -1,13 +1,9 @@
 import { useRef, useState } from 'react';
 import './NewArrival.css';
 import { addToCart } from '../../data/cart';
+import { websiteProducts } from '../../data/websiteProducts';
 
-const products = [
-  { id: 1, name: 'Silk Saree', price: '2,699', originalPrice: '3,470', images: ['/image.png', '/image.png'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
-  { id: 2, name: 'Silk Saree', price: '2,699', originalPrice: '3,470', images: ['/image.png', '/image.png'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
-  { id: 3, name: 'Silk Saree', price: '2,699', originalPrice: '3,470', images: ['/image.png', '/image.png'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
-  { id: 4, name: 'Silk Saree', price: '2,699', originalPrice: '3,470', images: ['/image.png', '/image.png'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
-];
+const products = websiteProducts.filter((p) => String(p.id).startsWith('newarrivals_'));
 
 const HeartIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -69,11 +65,6 @@ function ProductCard({ product, onScroll }) {
       </div>
       <div className="new-arrival__card-details">
         <h3 className="new-arrival__card-name">{product.name}</h3>
-        <div className="new-arrival__card-colors">
-          {product.colors.map((color, i) => (
-            <span key={i} className="new-arrival__card-swatch" style={{ backgroundColor: color }} aria-hidden="true" />
-          ))}
-        </div>
         <div className="new-arrival__card-price">
           <span className="new-arrival__card-price-current">₹ {product.price}/-</span>
           <span className="new-arrival__card-price-original">₹ {product.originalPrice}</span>

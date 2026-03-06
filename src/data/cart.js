@@ -1,4 +1,54 @@
-const CART_STORAGE_KEY = 'suhatika_cart_v1';
+const CART_STORAGE_KEY = 'suhatika:cart';
+const CART_PENDING_KEY = 'suhatika:pending_cart';
+
+function isLoggedIn() {
+  try {
+    return Boolean(window.localStorage.getItem('suhatika:auth'));
+  } catch {
+    return false;
+  }
+}
+
+function setPendingCartAction(action) {
+  if (!action) {
+    window.localStorage.removeItem(CART_PENDING_KEY);
+    return;
+  }
+  window.localStorage.setItem(CART_PENDING_KEY, JSON.stringify(action));
+}
+
+function consumePendingCartAction() {
+  try {
+    const raw = window.localStorage.getItem(CART_PENDING_KEY);
+    window.localStorage.removeItem(CART_PENDING_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    window.localStorage.removeItem(CART_PENDING_KEY);
+    return null;
+  }
+}
+
+function ensureLoginForCart(action) {
+  if (isLoggedIn()) return true;
+  setPendingCartAction(action);
+  const current = window.location.hash || '#/';
+  window.location.hash = `#/login?next=${encodeURIComponent(current)}`;
+  return false;
+}
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('auth:post_login_action', (e) => {
+    const pending = e?.detail || consumePendingCartAction();
+    if (!pending) return;
+    if (pending.type === 'add_to_cart') {
+      addToCart({ productId: pending.productId, quantity: pending.quantity ?? 1, color: pending.color ?? null, _skipAuth: true });
+    }
+    if (pending.type === 'buy_now') {
+      addToCart({ productId: pending.productId, quantity: pending.quantity ?? 1, color: pending.color ?? null, _skipAuth: true });
+      window.location.hash = '#/checkout';
+    }
+  });
+}
 
 function safeParse(json, fallback) {
   try {
@@ -20,7 +70,12 @@ export function setCart(items) {
   window.dispatchEvent(new CustomEvent('cart:change'));
 }
 
-export function addToCart({ productId, quantity = 1, color = null }) {
+export function addToCart({ productId, quantity = 1, color = null, _skipAuth = false, _action = 'add_to_cart' }) {
+  if (!_skipAuth) {
+    const ok = ensureLoginForCart({ type: _action, productId, quantity, color });
+    if (!ok) return;
+  }
+
   const items = getCart();
   const idx = items.findIndex((i) => String(i.productId) === String(productId) && String(i.color ?? '') === String(color ?? ''));
 

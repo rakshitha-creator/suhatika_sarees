@@ -1,15 +1,9 @@
 import { useRef, useState } from 'react';
 import './Collections.css';
 import { addToCart } from '../../data/cart';
+import { websiteProducts } from '../../data/websiteProducts';
 
-const products = [
-  { id: 1, name: 'Silk Saree', price: '2,699', originalPrice: '3,470', images: ['/image.png', '/image.png'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
-  { id: 2, name: 'Silk Saree', price: '2,699', originalPrice: '3,470', images: ['/image.png', '/image.png'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
-  { id: 3, name: 'Silk Saree', price: '2,699', originalPrice: '3,470', images: ['/image.png', '/image.png'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
-  { id: 4, name: 'Silk Saree', price: '2,699', originalPrice: '3,470', images: ['/image.png', '/image.png'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
-  { id: 5, name: 'Silk Saree', price: '2,699', originalPrice: '3,470', images: ['/image.png', '/image.png'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
-  { id: 6, name: 'Silk Saree', price: '2,699', originalPrice: '3,470', images: ['/image.png', '/image.png'], colors: ['#e53935', '#43a047', '#1e88e5', '#fdd835'] },
-];
+const products = websiteProducts.filter((p) => String(p.id).startsWith('collections_'));
 
 const HeartIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -71,11 +65,6 @@ function ProductCard({ product, rowId }) {
       </div>
       <div className="collections__card-details">
         <h3 className="collections__card-name">{product.name}</h3>
-        <div className="collections__card-colors">
-          {product.colors.map((color, i) => (
-            <span key={`${rowId}-${product.id}-color-${i}`} className="collections__card-swatch" style={{ backgroundColor: color }} aria-hidden="true" />
-          ))}
-        </div>
         <div className="collections__card-price">
           <span className="collections__card-price-current">₹ {product.price}/-</span>
           <span className="collections__card-price-original">₹ {product.originalPrice}</span>
@@ -108,7 +97,6 @@ const CarouselRow = ({ scrollRef, rowId }) => (
 
 export default function Collections() {
   const scrollRef1 = useRef(null);
-  const scrollRef2 = useRef(null);
 
   return (
     <section className="collections">
@@ -118,7 +106,6 @@ export default function Collections() {
           <a href="#/collections" className="collections__view-all">View All</a>
         </div>
         <CarouselRow scrollRef={scrollRef1} rowId={1} />
-        <CarouselRow scrollRef={scrollRef2} rowId={2} />
       </div>
     </section>
   );

@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
-import { getProductById } from '../../data/products';
 import { addToCart } from '../../data/cart';
+import { getWebsiteProductById } from '../../data/websiteProducts';
 import './ProductDetail.css';
 
 const ChevronLeftIcon = () => (
@@ -33,7 +33,8 @@ function pad2(n) {
 }
 
 export default function ProductDetail({ productId }) {
-  const product = useMemo(() => getProductById(productId), [productId]);
+  const product = useMemo(() => getWebsiteProductById(productId), [productId]);
+
   const images = product?.images?.length ? product.images : ['/image.png'];
 
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -52,7 +53,7 @@ export default function ProductDetail({ productId }) {
     setQuantity(1);
     setAddedToCart(false);
     setOfferEndsAt(Date.now() + 2 * 24 * 60 * 60 * 1000 + 12 * 60 * 60 * 1000 + 45 * 60 * 1000 + 5 * 1000);
-  }, [productId]);
+  }, [productId, product]);
 
   useEffect(() => {
     setAddedToCart(false);
@@ -243,7 +244,7 @@ export default function ProductDetail({ productId }) {
                 type="button"
                 className="product-detail__buy"
                 onClick={() => {
-                  addToCart({ productId: product.id, quantity, color: selectedColor });
+                  addToCart({ productId: product.id, quantity, color: selectedColor, _action: 'buy_now' });
                   window.location.hash = '#/checkout';
                 }}
               >

@@ -1,24 +1,26 @@
 .header {
   position: absolute;
-  top: 2.5rem;
+  top: 0;
   left: 0;
   right: 0;
   z-index: 100;
-  padding: 0 1.5rem;
+  padding: 0;
 }
 
 .header__inner {
-  max-width: 1400px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: none;
+  margin: 0;
   display: flex;
   align-items: center;
   gap: 2rem;
-  padding: 0.65rem 1.5rem;
-  background: rgba(255, 255, 255, 0.35);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 0.85rem 1.75rem;
+  background: #ffffff;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-radius: 0;
+  border: none;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.06);
 }
 
 /* Brand: purple text, no background */

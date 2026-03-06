@@ -84,16 +84,6 @@ function CraftedCollectionCard({ product }) {
 
       <div className="about-pages__crafted-collections-card-details">
         <h3 className="about-pages__crafted-collections-card-name">{product.name}</h3>
-        <div className="about-pages__crafted-collections-card-colors">
-          {product.colors.map((color, i) => (
-            <span
-              key={`${product.id}-color-${i}`}
-              className="about-pages__crafted-collections-card-swatch"
-              style={{ backgroundColor: color }}
-              aria-hidden="true"
-            />
-          ))}
-        </div>
         <div className="about-pages__crafted-collections-card-price">
           <span className="about-pages__crafted-collections-card-price-current">₹ {product.price}/-</span>
           <span className="about-pages__crafted-collections-card-price-original">₹ {product.originalPrice}</span>

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
-import { getCart, updateCartItem } from '../../data/cart';
+import { clearCart, getCart, updateCartItem } from '../../data/cart';
 import { getProductById } from '../../data/products';
 import './Checkout.css';
 
@@ -208,7 +208,22 @@ export default function Checkout() {
                   className="checkout__place"
                   onClick={() => {
                     if (items.length === 0) return;
-                    alert('Order complete page will be added next.');
+                    const orderCode = `#${Math.floor(100000 + Math.random() * 900000)}`;
+                    const paymentMethod = payment === 'upi' ? 'UPI' : 'Debit Card';
+
+                    window.sessionStorage.setItem(
+                      'order:last',
+                      JSON.stringify({
+                        orderCode,
+                        date: new Date().toISOString(),
+                        total,
+                        paymentMethod,
+                        items,
+                      })
+                    );
+
+                    clearCart();
+                    window.location.hash = '#/order-complete';
                   }}
                 >
                   Place Order

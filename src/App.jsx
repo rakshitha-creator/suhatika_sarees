@@ -7,6 +7,9 @@ import AboutPages from './pages/AboutPages/AboutPages';
 import ProductDetail from './pages/ProductDetail/ProductDetail';
 import Cart from './pages/Cart/Cart';
 import Checkout from './pages/Checkout/Checkout';
+import OrderComplete from './pages/OrderComplete/OrderComplete';
+import Login from './pages/Login/Login';
+import Signup from './pages/Signup/Signup';
 
 function App() {
   const [hash, setHash] = useState(() => window.location.hash || '#/');
@@ -31,7 +34,7 @@ function App() {
 
   const path = hash.replace(/^#/, '');
 
-  const productMatch = path.match(/^\/product\/(\d+)$/);
+  const productMatch = path.match(/^\/product\/([^/]+)$/);
   if (productMatch) {
     return <ProductDetail productId={productMatch[1]} />;
   }
@@ -40,8 +43,20 @@ function App() {
     return <Cart />;
   }
 
+  if (path.startsWith('/login')) {
+    return <Login />;
+  }
+
+  if (path.startsWith('/signup')) {
+    return <Signup />;
+  }
+
   if (path === '/checkout') {
     return <Checkout />;
+  }
+
+  if (path === '/order-complete') {
+    return <OrderComplete />;
   }
 
   if (path === '/collections') {
