@@ -291,6 +291,21 @@
   }
 }
 
+@media (max-width: 600px) {
+  .collections__carousel {
+    padding: 0.25rem 0.5rem;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+
+  .collections__card {
+    width: calc(50% - 0.5rem);
+    min-width: calc(50% - 0.5rem);
+    scroll-snap-align: start;
+  }
+}
+
 @media (max-width: 480px) {
   .collections {
     padding: 2rem 0 2.5rem;
@@ -301,6 +316,6 @@
   }
 
   .collections__card {
-    width: min(90vw, 260px);
+    width: calc((100% - 1rem) / 2);
   }
 }

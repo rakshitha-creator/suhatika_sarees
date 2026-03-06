@@ -99,6 +99,17 @@ export default function Header() {
     { title: 'Top', items: ['T-Shirts', 'Polos', 'Shirts', 'Sweatshirts', 'Hoodies', 'Jackets'] },
     { title: 'Bottom', items: ['Cargos', 'Jeans', 'Pants', 'Shorts'] },
     { title: 'Accessories', items: ['Bags', 'Caps'] },
+    {
+      title: 'Colours',
+      items: [
+        { label: 'Red', color: '#ef4444' },
+        { label: 'Green', color: '#22c55e' },
+        { label: 'Blue', color: '#3b82f6' },
+        { label: 'Yellow', color: '#f59e0b' },
+        { label: 'Purple', color: '#5D157E' },
+        { label: 'Black', color: '#111827' },
+      ],
+    },
   ];
 
   return (
@@ -222,16 +233,22 @@ export default function Header() {
                 <div key={group.title} className="header__menu-group">
                   <div className="header__menu-group-title">{group.title}</div>
                   <div className="header__menu-pills">
-                    {group.items.map((pill) => (
-                      <a
-                        key={pill}
-                        href="#/collections"
-                        className="header__menu-pill"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        {pill}
-                      </a>
-                    ))}
+                    {group.items.map((pill) => {
+                      const label = typeof pill === 'string' ? pill : pill.label;
+                      const swatchColor = typeof pill === 'string' ? null : pill.color;
+
+                      return (
+                        <a
+                          key={label}
+                          href="#/collections"
+                          className={`header__menu-pill${swatchColor ? ' header__menu-pill--color' : ''}`}
+                          onClick={() => setIsMenuOpen(false)}
+                        >
+                          {swatchColor && <span className="header__menu-pill-swatch" style={{ backgroundColor: swatchColor }} aria-hidden="true" />}
+                          {label}
+                        </a>
+                      );
+                    })}
                   </div>
                 </div>
               ))}

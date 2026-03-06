@@ -292,6 +292,18 @@
   }
 }
 
+@media (max-width: 600px) {
+  .new-arrival__carousel {
+    padding: 0.25rem 0;
+    gap: 0;
+  }
+
+  .new-arrival__card {
+    width: 100%;
+    scroll-snap-align: start;
+  }
+}
+
 @media (max-width: 480px) {
   .new-arrival {
     padding: 2rem 0 2.5rem;
@@ -302,6 +314,6 @@
   }
 
   .new-arrival__card {
-    width: min(90vw, 260px);
+    width: calc(100% - 2rem);
   }
 }
