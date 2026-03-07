@@ -234,8 +234,8 @@ export default function ProductDetail({ productId }) {
                 type="button"
                 className="product-detail__add"
                 onClick={() => {
-                  addToCart({ productId: product.id, quantity, color: selectedColor });
-                  setAddedToCart(true);
+                  const ok = addToCart({ productId: product.id, quantity, color: selectedColor });
+                  if (ok) setAddedToCart(true);
                 }}
               >
                 {addedToCart ? 'Added to cart' : 'Add to Cart'}
@@ -244,8 +244,8 @@ export default function ProductDetail({ productId }) {
                 type="button"
                 className="product-detail__buy"
                 onClick={() => {
-                  addToCart({ productId: product.id, quantity, color: selectedColor, _action: 'buy_now' });
-                  window.location.hash = '#/checkout';
+                  const ok = addToCart({ productId: product.id, quantity, color: selectedColor, _action: 'buy_now' });
+                  if (ok) window.location.hash = '#/checkout';
                 }}
               >
                 Buy Now

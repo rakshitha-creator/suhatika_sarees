@@ -33,7 +33,7 @@ export default function Login() {
 
       let profile = null;
       try {
-        const snap = await get(ref(db, `users/${u.uid}`));
+        const snap = await get(ref(db, `customers/${u.uid}/profile`));
         profile = snap.exists() ? snap.val() : null;
       } catch {
         profile = null;

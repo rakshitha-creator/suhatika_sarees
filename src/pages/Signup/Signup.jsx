@@ -42,7 +42,7 @@ export default function Signup() {
 
       const phoneE164 = normalizePhone(phone);
 
-      await set(ref(db, `users/${u.uid}`), {
+      await set(ref(db, `customers/${u.uid}/profile`), {
         name,
         phone: phoneE164,
         email,
