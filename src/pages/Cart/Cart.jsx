@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import { getCart, removeFromCart, updateCartItem } from '../../data/cart';
-import { getProductById } from '../../data/products';
+import { getWebsiteProductById } from '../../data/websiteProducts';
 import './Cart.css';
 
 function formatCurrency(value) {
@@ -12,10 +12,10 @@ function formatCurrency(value) {
 }
 
 function CartItemRow({ item }) {
-  const product = getProductById(item.productId);
+  const product = getWebsiteProductById(item.productId);
   const image = product?.images?.[0] ?? '/image.png';
   const name = product?.name ?? 'Product';
-  const price = product?.price ?? 0;
+  const price = Number(String(product?.price ?? 0).replace(/,/g, '')) || 0;
   const qty = item.quantity ?? 1;
   const subtotal = price * qty;
 
@@ -79,8 +79,8 @@ export default function Cart() {
 
   const subtotal = useMemo(() => {
     return items.reduce((sum, item) => {
-      const product = getProductById(item.productId);
-      const price = product?.price ?? 0;
+      const product = getWebsiteProductById(item.productId);
+      const price = Number(String(product?.price ?? 0).replace(/,/g, '')) || 0;
       return sum + price * (item.quantity ?? 1);
     }, 0);
   }, [items]);

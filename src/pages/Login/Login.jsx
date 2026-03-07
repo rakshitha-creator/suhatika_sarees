@@ -2,7 +2,8 @@ import { useMemo, useState } from 'react';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../lib/firebaseClient';
+import { ref, get } from 'firebase/database';
+import { auth, db } from '../../lib/firebaseClient';
 import { consumePendingAction, setAuthUser } from '../../data/auth';
 
 function getNextFromHash() {
@@ -29,7 +30,21 @@ export default function Login() {
     try {
       const cred = await signInWithEmailAndPassword(auth, email, password);
       const u = cred.user;
-      setAuthUser({ uid: u.uid, email: u.email });
+
+      let profile = null;
+      try {
+        const snap = await get(ref(db, `users/${u.uid}`));
+        profile = snap.exists() ? snap.val() : null;
+      } catch {
+        profile = null;
+      }
+
+      setAuthUser({
+        uid: u.uid,
+        email: u.email,
+        name: profile?.name ?? '',
+        phone: profile?.phone ?? '',
+      });
 
       const pending = consumePendingAction();
       window.location.hash = nextHash || '#/';

@@ -24,6 +24,13 @@ export default function Signup() {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const normalizePhone = (raw) => {
+    const digits = String(raw || '').replace(/\D/g, '');
+    const local = digits.startsWith('91') ? digits.slice(2) : digits;
+    const ten = local.slice(-10);
+    return `+91${ten}`;
+  };
+
   const onSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -33,14 +40,16 @@ export default function Signup() {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       const u = cred.user;
 
+      const phoneE164 = normalizePhone(phone);
+
       await set(ref(db, `users/${u.uid}`), {
         name,
-        phone,
+        phone: phoneE164,
         email,
         createdAt: new Date().toISOString(),
       });
 
-      setAuthUser({ uid: u.uid, email: u.email, name, phone });
+      setAuthUser({ uid: u.uid, email: u.email, name, phone: phoneE164 });
 
       const pending = consumePendingAction();
       window.location.hash = nextHash || '#/';

@@ -2,7 +2,11 @@ import { useEffect, useMemo, useState } from 'react';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import { clearCart, getCart, updateCartItem } from '../../data/cart';
-import { getProductById } from '../../data/products';
+import { getWebsiteProductById } from '../../data/websiteProducts';
+import { getAuthUser } from '../../data/auth';
+import { auth } from '../../lib/firebaseClient';
+import { ref, set } from 'firebase/database';
+import { db } from '../../lib/firebaseClient';
 import './Checkout.css';
 
 function formatCurrency(value) {
@@ -12,10 +16,10 @@ function formatCurrency(value) {
 }
 
 function OrderItem({ item }) {
-  const product = getProductById(item.productId);
+  const product = getWebsiteProductById(item.productId);
   const image = product?.images?.[0] ?? '/image.png';
   const name = product?.name ?? 'Product';
-  const price = product?.price ?? 0;
+  const price = Number(String(product?.price ?? 0).replace(/,/g, '')) || 0;
   const qty = item.quantity ?? 1;
 
   return (
@@ -53,6 +57,18 @@ export default function Checkout() {
   const [items, setItems] = useState(() => getCart());
   const [coupon, setCoupon] = useState('');
   const [payment, setPayment] = useState('card');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [street, setStreet] = useState('');
+  const [country, setCountry] = useState('IN');
+  const [city, setCity] = useState('');
+  const [stateName, setStateName] = useState('');
+  const [zip, setZip] = useState('');
+  const [isPlacing, setIsPlacing] = useState(false);
+  const [placeError, setPlaceError] = useState('');
+  const [attemptedSubmit, setAttemptedSubmit] = useState(false);
 
   useEffect(() => {
     const onChange = () => setItems(getCart());
@@ -66,8 +82,8 @@ export default function Checkout() {
 
   const subtotal = useMemo(() => {
     return items.reduce((sum, item) => {
-      const product = getProductById(item.productId);
-      const price = product?.price ?? 0;
+      const product = getWebsiteProductById(item.productId);
+      const price = Number(String(product?.price ?? 0).replace(/,/g, '')) || 0;
       return sum + price * (item.quantity ?? 1);
     }, 0);
   }, [items]);
@@ -79,6 +95,140 @@ export default function Checkout() {
 
   const shipping = 0;
   const total = subtotal - discount + shipping;
+
+  const missingFields = useMemo(() => {
+    const missing = {};
+    if (!String(firstName || '').trim()) missing.firstName = true;
+    if (!String(lastName || '').trim()) missing.lastName = true;
+    if (!String(phone || '').trim()) missing.phone = true;
+    if (!String(email || '').trim()) missing.email = true;
+    if (!String(street || '').trim()) missing.street = true;
+    if (!String(city || '').trim()) missing.city = true;
+    if (!String(stateName || '').trim()) missing.stateName = true;
+    if (!String(zip || '').trim()) missing.zip = true;
+    if (!String(country || '').trim()) missing.country = true;
+    return missing;
+  }, [firstName, lastName, phone, email, street, city, stateName, zip, country]);
+
+  const canPlaceOrder = useMemo(() => {
+    return Object.keys(missingFields).length === 0 && items.length > 0 && !isPlacing;
+  }, [missingFields, items.length, isPlacing]);
+
+  const fieldStyle = (isMissing) => {
+    if (!attemptedSubmit || !isMissing) return undefined;
+    return { borderColor: '#b91c1c', boxShadow: '0 0 0 1px #b91c1c inset' };
+  };
+
+  const requiredText = (isMissing) => {
+    if (!attemptedSubmit || !isMissing) return null;
+    return <div style={{ marginTop: 6, color: '#b91c1c', fontWeight: 600, fontSize: 12 }}>Required</div>;
+  };
+
+  const buildAddressString = () => {
+    const parts = [street, city, stateName, zip, country].map((v) => String(v || '').trim()).filter(Boolean);
+    return parts.join(', ');
+  };
+
+  const placeOrder = async () => {
+    if (items.length === 0) return;
+    setAttemptedSubmit(true);
+    if (Object.keys(missingFields).length > 0) {
+      const first = ['firstName', 'lastName', 'phone', 'email', 'street', 'country', 'city', 'stateName', 'zip'].find(
+        (k) => missingFields[k]
+      );
+      const el = first ? document.querySelector(`[data-checkout-field="${first}"]`) : null;
+      if (el && typeof el.scrollIntoView === 'function') {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return;
+    }
+
+    setPlaceError('');
+    setIsPlacing(true);
+
+    try {
+      const user = getAuthUser();
+      const uid = user?.uid;
+      if (!uid) {
+        window.location.hash = '#/login?next=%23%2Fcheckout';
+        return;
+      }
+
+      const orderId = `ord_${Date.now()}_${Math.floor(1000 + Math.random() * 9000)}`;
+      const paymentMethod = payment === 'upi' ? 'UPI' : 'Debit Card';
+      const address = buildAddressString();
+
+      await set(ref(db, `users/${uid}/orders/${orderId}`), {
+        orderId,
+        createdAt: new Date().toISOString(),
+        status: 'confirmed',
+        paymentMethod,
+        total,
+        subtotal,
+        discount,
+        shipping,
+        items,
+        customer: {
+          firstName,
+          lastName,
+          phone,
+          email,
+        },
+        shippingAddress: {
+          street,
+          city,
+          state: stateName,
+          zip,
+          country,
+        },
+      });
+
+      let idToken = '';
+      try {
+        if (auth.currentUser) idToken = await auth.currentUser.getIdToken();
+      } catch {
+        idToken = '';
+      }
+
+      if (idToken) {
+        const resp = await fetch('http://localhost:5001/api/whatsapp/order-confirmed', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${idToken}`,
+          },
+          body: JSON.stringify({
+            orderId,
+            address,
+            total,
+          }),
+        });
+
+        if (!resp.ok) {
+          const data = await resp.json().catch(() => null);
+          setPlaceError(data?.error || 'Unable to send WhatsApp confirmation');
+        }
+      }
+
+      window.sessionStorage.setItem(
+        'order:last',
+        JSON.stringify({
+          orderCode: `#${orderId}`,
+          date: new Date().toISOString(),
+          total,
+          paymentMethod,
+          items,
+        })
+      );
+
+      clearCart();
+      window.location.hash = '#/order-complete';
+    } catch {
+      setPlaceError('Unable to place order');
+    } finally {
+      setIsPlacing(false);
+    }
+  };
 
   return (
     <div className="checkout">
@@ -109,20 +259,56 @@ export default function Checkout() {
                 <div className="checkout__grid2">
                   <label className="checkout__field">
                     <span className="checkout__label">First name</span>
-                    <input className="checkout__input" type="text" placeholder="First name" />
+                    <input
+                      className="checkout__input"
+                      type="text"
+                      placeholder="First name"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      data-checkout-field="firstName"
+                      style={fieldStyle(missingFields.firstName)}
+                    />
+                    {requiredText(missingFields.firstName)}
                   </label>
                   <label className="checkout__field">
                     <span className="checkout__label">Last name</span>
-                    <input className="checkout__input" type="text" placeholder="Last name" />
+                    <input
+                      className="checkout__input"
+                      type="text"
+                      placeholder="Last name"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      data-checkout-field="lastName"
+                      style={fieldStyle(missingFields.lastName)}
+                    />
+                    {requiredText(missingFields.lastName)}
                   </label>
                 </div>
                 <label className="checkout__field">
                   <span className="checkout__label">Phone number</span>
-                  <input className="checkout__input" type="tel" placeholder="Phone number" />
+                  <input
+                    className="checkout__input"
+                    type="tel"
+                    placeholder="Phone number"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    data-checkout-field="phone"
+                    style={fieldStyle(missingFields.phone)}
+                  />
+                  {requiredText(missingFields.phone)}
                 </label>
                 <label className="checkout__field">
                   <span className="checkout__label">Email address</span>
-                  <input className="checkout__input" type="email" placeholder="Your Email" />
+                  <input
+                    className="checkout__input"
+                    type="email"
+                    placeholder="Your Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    data-checkout-field="email"
+                    style={fieldStyle(missingFields.email)}
+                  />
+                  {requiredText(missingFields.email)}
                 </label>
               </div>
 
@@ -130,33 +316,68 @@ export default function Checkout() {
                 <div className="checkout__card-title">Shipping Address</div>
                 <label className="checkout__field">
                   <span className="checkout__label">Street address</span>
-                  <input className="checkout__input" type="text" placeholder="Street Address" />
+                  <input
+                    className="checkout__input"
+                    type="text"
+                    placeholder="Street Address"
+                    value={street}
+                    onChange={(e) => setStreet(e.target.value)}
+                    data-checkout-field="street"
+                    style={fieldStyle(missingFields.street)}
+                  />
+                  {requiredText(missingFields.street)}
                 </label>
 
                 <label className="checkout__field">
                   <span className="checkout__label">Country</span>
-                  <select className="checkout__select" defaultValue="">
-                    <option value="" disabled>
-                      Country
-                    </option>
+                  <select className="checkout__select" value={country} onChange={(e) => setCountry(e.target.value)}>
                     <option value="IN">India</option>
                     <option value="US">United States</option>
                   </select>
+                  <div data-checkout-field="country" />
+                  {requiredText(missingFields.country)}
                 </label>
 
                 <label className="checkout__field">
                   <span className="checkout__label">Town / City</span>
-                  <input className="checkout__input" type="text" placeholder="Town / City" />
+                  <input
+                    className="checkout__input"
+                    type="text"
+                    placeholder="Town / City"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    data-checkout-field="city"
+                    style={fieldStyle(missingFields.city)}
+                  />
+                  {requiredText(missingFields.city)}
                 </label>
 
                 <div className="checkout__grid2">
                   <label className="checkout__field">
                     <span className="checkout__label">State</span>
-                    <input className="checkout__input" type="text" placeholder="State" />
+                    <input
+                      className="checkout__input"
+                      type="text"
+                      placeholder="State"
+                      value={stateName}
+                      onChange={(e) => setStateName(e.target.value)}
+                      data-checkout-field="stateName"
+                      style={fieldStyle(missingFields.stateName)}
+                    />
+                    {requiredText(missingFields.stateName)}
                   </label>
                   <label className="checkout__field">
                     <span className="checkout__label">Zip code</span>
-                    <input className="checkout__input" type="text" placeholder="Zip Code" />
+                    <input
+                      className="checkout__input"
+                      type="text"
+                      placeholder="Zip Code"
+                      value={zip}
+                      onChange={(e) => setZip(e.target.value)}
+                      data-checkout-field="zip"
+                      style={fieldStyle(missingFields.zip)}
+                    />
+                    {requiredText(missingFields.zip)}
                   </label>
                 </div>
 
@@ -206,28 +427,15 @@ export default function Checkout() {
                 <button
                   type="button"
                   className="checkout__place"
+                  disabled={items.length === 0 || isPlacing}
                   onClick={() => {
-                    if (items.length === 0) return;
-                    const orderCode = `#${Math.floor(100000 + Math.random() * 900000)}`;
-                    const paymentMethod = payment === 'upi' ? 'UPI' : 'Debit Card';
-
-                    window.sessionStorage.setItem(
-                      'order:last',
-                      JSON.stringify({
-                        orderCode,
-                        date: new Date().toISOString(),
-                        total,
-                        paymentMethod,
-                        items,
-                      })
-                    );
-
-                    clearCart();
-                    window.location.hash = '#/order-complete';
+                    setAttemptedSubmit(true);
+                    placeOrder();
                   }}
                 >
-                  Place Order
+                  {isPlacing ? 'Placing...' : 'Place Order'}
                 </button>
+                {placeError && <div style={{ marginTop: 10, color: '#b91c1c', fontWeight: 600 }}>{placeError}</div>}
               </div>
             </section>
 

@@ -1,13 +1,9 @@
+import { onValue, ref, set } from 'firebase/database';
+import { db } from '../lib/firebaseClient';
+import { getAuthUser, isLoggedIn } from './auth';
+
 const CART_STORAGE_KEY = 'suhatika:cart';
 const CART_PENDING_KEY = 'suhatika:pending_cart';
-
-function isLoggedIn() {
-  try {
-    return Boolean(window.localStorage.getItem('suhatika:auth'));
-  } catch {
-    return false;
-  }
-}
 
 function setPendingCartAction(action) {
   if (!action) {
@@ -68,6 +64,49 @@ export function getCart() {
 export function setCart(items) {
   window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
   window.dispatchEvent(new CustomEvent('cart:change'));
+
+  try {
+    const user = getAuthUser();
+    if (user?.uid) {
+      set(ref(db, `users/${user.uid}/cart`), {
+        updatedAt: new Date().toISOString(),
+        items,
+      });
+    }
+  } catch {
+    // ignore
+  }
+}
+
+function startRemoteCartSync(uid) {
+  try {
+    const cartRef = ref(db, `users/${uid}/cart`);
+    onValue(cartRef, (snap) => {
+      const data = snap.val();
+      const remoteItems = Array.isArray(data?.items) ? data.items : [];
+      window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(remoteItems));
+      window.dispatchEvent(new CustomEvent('cart:change'));
+    });
+  } catch {
+    // ignore
+  }
+}
+
+if (typeof window !== 'undefined') {
+  let startedForUid = null;
+  window.addEventListener('auth:change', () => {
+    const user = getAuthUser();
+    const uid = user?.uid || null;
+    if (!uid) {
+      startedForUid = null;
+      window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify([]));
+      window.dispatchEvent(new CustomEvent('cart:change'));
+      return;
+    }
+    if (startedForUid === uid) return;
+    startedForUid = uid;
+    startRemoteCartSync(uid);
+  });
 }
 
 export function addToCart({ productId, quantity = 1, color = null, _skipAuth = false, _action = 'add_to_cart' }) {
