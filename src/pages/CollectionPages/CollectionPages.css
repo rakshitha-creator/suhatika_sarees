@@ -74,7 +74,7 @@
 .collection-pages__hero-bg {
   position: absolute;
   inset: 0;
-  background-image: url('/bg-2-collections.PNG');
+  background-image: url('/BG2-Edited.png');
   background-size: 100% auto;
   background-position: center top;
   background-repeat: no-repeat;
@@ -94,13 +94,14 @@
 .collection-pages__hero-card {
   position: absolute;
   left: 160px;
-  top: 230px;
-  right: 500px;
-  bottom: 170px;
+  top: 197px;
+  width: 695px;
+  height: 294px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 3rem 3.5rem;
+  gap: 24px;
+  padding: 60px 40px 60px 40px;
   background: linear-gradient(
     135deg,
     rgba(255, 255, 255, 0.221),
@@ -109,6 +110,7 @@
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   border-radius: 20px;
+  opacity: 1;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   z-index: 2;
 }

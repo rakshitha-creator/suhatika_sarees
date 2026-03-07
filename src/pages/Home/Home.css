@@ -1,8 +1,24 @@
 .home {
   position: relative;
   overflow-x: hidden;
+  /* header is fixed so hero should sit beneath it, no extra padding */
 }
 
+/* HERO BACKGROUND */
+.home .hero__bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('/Home-bg.png');
+  background-size: cover; /* changed from 100% auto to cover */
+  background-position: center top+30px; /* changed from center -20px */
+  background-repeat: no-repeat;
+  filter: none;
+  transform: none;
+  z-index: 0;
+}
+
+
+/* NEW ARRIVAL */
 .home .new-arrival__carousel-wrap {
   justify-content: flex-start;
   gap: 0;
@@ -32,34 +48,75 @@
   background: transparent;
 }
 
+/* COLLECTIONS */
 .home .collections {
-  padding: 2.25rem 0 3rem;
+  padding: 2.25rem 0 2.75rem;
 }
 
 .home .collections__carousel {
-  gap: 2.5rem;
-  justify-content: flex-start;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  overflow-x: hidden;
+  scroll-snap-type: none;
+  padding: 0;
+  gap: 1.25rem;
 }
 
 .home .collections__card {
-  width: clamp(200px, 22vw, 240px);
-  background: rgba(255, 255, 255, 0.6);
+  width: 100%;
+  min-width: 0;
+  background: rgba(255, 255, 255, 0.52);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .home .collections__card-image-wrap {
-  padding: 8px 8px 0;
+  padding: 7px 7px 0;
   background: transparent;
+}
+
+.home .collections__card-details {
+  background: transparent;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1200px) {
+  .home .collections__carousel {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .home .collections__carousel {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 600px) {
   .home .new-arrival__carousel {
-    padding: 0.25rem 1rem;
-    scroll-padding-left: 1rem;
+    padding: 0.25rem 0;
     justify-content: flex-start;
     gap: 0;
   }
 
   .home .new-arrival__card {
     width: 100%;
+  }
+
+  .home .collections__carousel {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow-x: hidden;
+    scroll-snap-type: none;
+    padding: 0;
+    gap: 1rem;
+  }
+
+  .home .collections__card {
+    width: 100%;
+    min-width: 0;
   }
 }

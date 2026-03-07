@@ -1,23 +1,16 @@
 .hero {
   position: relative;
-  height: 630px;
+  height: 110vh;
   width: 100%;
   box-sizing: border-box;
   overflow: hidden;
+  display: flex;
+  align-items: flex-start; /* ensures content starts from top */
+  justify-content: center;
 }
 
-.hero__bg {
-  position: absolute;
-  inset: 0;
-  background-image: url('/hero-bg.JPEG');
-  background-size: cover;
-  background-position: 78% 18%;
-  background-repeat: no-repeat;
-  filter: none;
-  transform: none;
-  z-index: 0;
-}
 
+/* Background */
 .hero__bg::after {
   content: '';
   position: absolute;
@@ -34,23 +27,20 @@
 .hero__card {
   position: absolute;
   left: 160px;
-  top: 200px;
-  right: 500px;
-  bottom: 130px;
+  top: 197px;
+  width: 695px;
+  height: 294px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 3rem 3.5rem;
-  background: linear-gradient(
-    135deg,
-    #ffffff1c,
-    rgba(255, 255, 255, 0.12)
-  );
+  gap: 24px;
+  padding: 60px 40px 60px 40px;
+  background: linear-gradient(135deg, #ffffff1c, rgba(255, 255, 255, 0.12));
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
   border-radius: 20px;
-  
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  opacity: 1;
 }
 
 .hero__title {
@@ -67,14 +57,12 @@
   letter-spacing: 0.03em;
 }
 
-/* Purple rounded CTA like the screenshot */
 .hero__cta {
   display: inline-block;
   padding: 12.5px 30px;
   position: absolute;
   top: 190px;
   left: 40px;
-  
   background: linear-gradient(90deg, var(--color-primary), var(--color-primary-dark));
   color: #ffffff;
   font-weight: 600;
@@ -97,6 +85,7 @@
   box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.5);
 }
 
+/* Responsive */
 @media (max-width: 900px) {
   .hero {
     height: auto;
@@ -105,6 +94,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-top: var(--header-height, 70px); /* Adjusted for smaller screens */
   }
 
   .hero__card {
