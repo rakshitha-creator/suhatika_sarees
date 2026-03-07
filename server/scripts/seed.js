@@ -2,9 +2,12 @@ import admin from 'firebase-admin';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import dotenv from 'dotenv';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.resolve(__dirname, '..', '.env'), override: true });
 
 function getServiceAccountPath() {
   const fromEnv = process.env.GOOGLE_APPLICATION_CREDENTIALS;
@@ -34,61 +37,26 @@ if (!admin.apps.length) {
 const db = admin.database();
 
 async function loadProducts() {
-  const repoRoot = path.resolve(__dirname, '..', '..');
+  const webProductsModulePath = path.resolve(__dirname, '..', '..', 'src', 'data', 'websiteProducts.js');
+  const modUrl = new URL(`file://${webProductsModulePath.replace(/\\/g, '/')}`);
+  const mod = await import(modUrl.href);
 
-  const sources = [
-    {
-      keyPrefix: 'newarrivals',
-      file: path.join(repoRoot, 'src', 'components', 'NewArrival', 'NewArrival.jsx'),
-    },
-    {
-      keyPrefix: 'collections',
-      file: path.join(repoRoot, 'src', 'components', 'Collections', 'Collections.jsx'),
-    },
-  ];
-
-  const all = [];
-  for (const src of sources) {
-    const text = fs.readFileSync(src.file, 'utf8');
-    const match = text.match(/const\s+products\s*=\s*\[((?:.|\n|\r)*?)\];/);
-    if (!match) continue;
-
-    const arrayLiteral = `[${match[1]}]`;
-    // eslint-disable-next-line no-new-func
-    const parsed = Function(`"use strict"; return (${arrayLiteral});`)();
-    if (Array.isArray(parsed)) {
-      parsed.forEach((p, idx) => {
-        all.push({
-          ...p,
-          __sourceKey: `${src.keyPrefix}_${idx + 1}`,
-        });
-      });
-    }
+  const products = mod.websiteProducts || mod.default;
+  if (!Array.isArray(products)) {
+    throw new Error('websiteProducts.js must export `websiteProducts` array');
   }
 
-  const byKey = new Map();
-  for (const p of all) {
-    const key = `${p?.name ?? ''}__${p?.price ?? ''}__${(p?.images?.[0] ?? '')}`;
-    if (!byKey.has(key)) byKey.set(key, p);
-  }
-
-  return Array.from(byKey.values()).map((p, idx) => {
-    const id = p.__sourceKey || String(idx + 1);
+  return products.map((p, idx) => {
+    const id = p?.id ? String(p.id) : String(idx + 1);
     return {
       id,
       name: p.name,
       price: p.price,
       originalPrice: p.originalPrice,
       images: p.images,
+      colors: p.colors,
     };
   });
-}
-
-function pathToFileUrl(p) {
-  const url = new URL('file:///');
-  const normalized = path.resolve(p).replaceAll('\\', '/');
-  url.pathname = normalized.startsWith('/') ? normalized : `/${normalized}`;
-  return url.href;
 }
 
 async function main() {

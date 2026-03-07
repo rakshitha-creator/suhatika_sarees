@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import { getCart } from '../../data/cart';
-import { getProductById } from '../../data/products';
+import { getWebsiteProductById } from '../../data/websiteProducts';
 import './OrderComplete.css';
 
 function formatCurrency(value) {
@@ -27,7 +27,7 @@ function generateOrderCode() {
 }
 
 function OrderThumb({ item }) {
-  const product = getProductById(item.productId);
+  const product = getWebsiteProductById(item.productId);
   const image = product?.images?.[0] ?? '/image.png';
   const qty = item.quantity ?? 1;
 
@@ -54,8 +54,8 @@ export default function OrderComplete() {
 
   const subtotal = useMemo(() => {
     return items.reduce((sum, item) => {
-      const product = getProductById(item.productId);
-      const price = product?.price ?? 0;
+      const product = getWebsiteProductById(item.productId);
+      const price = Number(String(product?.price ?? 0).replace(/,/g, '')) || 0;
       return sum + price * (item.quantity ?? 1);
     }, 0);
   }, [items]);
@@ -64,6 +64,48 @@ export default function OrderComplete() {
   const orderCode = orderData?.orderCode ?? generateOrderCode();
   const date = orderData?.date ? formatDate(orderData.date) : formatDate(new Date());
   const paymentMethod = orderData?.paymentMethod ?? 'Debit Card';
+
+  const sendWhatsAppUpdate = () => {
+    const customerName =
+      orderData?.customer?.firstName || orderData?.customer?.lastName
+        ? `${orderData?.customer?.firstName || ''} ${orderData?.customer?.lastName || ''}`.trim()
+        : '';
+    const customerPhone = orderData?.customer?.phone ? String(orderData.customer.phone).trim() : '';
+    const addr = orderData?.address
+      ? String(orderData.address)
+      : orderData?.shippingAddress
+        ? [
+            orderData.shippingAddress.street,
+            orderData.shippingAddress.city,
+            orderData.shippingAddress.state,
+            orderData.shippingAddress.zip,
+            orderData.shippingAddress.country,
+          ]
+            .map((v) => String(v || '').trim())
+            .filter(Boolean)
+            .join(', ')
+        : '';
+
+    const lines = [
+      'Order received!',
+      customerName ? `Name: ${customerName}` : null,
+      customerPhone ? `Phone: ${customerPhone}` : null,
+      `Order code: ${orderCode}`,
+      `Total: ${formatCurrency(total)}`,
+      addr ? `Address: ${addr}` : null,
+      '',
+      'Items:',
+      ...items.map((item) => {
+        const product = getWebsiteProductById(item.productId);
+        const name = product?.name ?? item.productId;
+        const qty = item.quantity ?? 1;
+        return `- ${name} x${qty}`;
+      }),
+    ].filter(Boolean);
+
+    const url = `https://wa.me/?text=${encodeURIComponent(lines.join('\n'))}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
 
   return (
     <div className="order-complete">
@@ -117,6 +159,9 @@ export default function OrderComplete() {
                 </div>
               </div>
 
+              <button type="button" className="order-complete__whatsapp" onClick={sendWhatsAppUpdate}>
+                WhatsApp Update
+              </button>
             </div>
           </section>
         </div>

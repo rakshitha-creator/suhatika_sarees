@@ -68,7 +68,7 @@ export function setCart(items) {
   try {
     const user = getAuthUser();
     if (user?.uid) {
-      set(ref(db, `users/${user.uid}/cart`), {
+      set(ref(db, `customers/${user.uid}/cart`), {
         updatedAt: new Date().toISOString(),
         items,
       });
@@ -80,7 +80,7 @@ export function setCart(items) {
 
 function startRemoteCartSync(uid) {
   try {
-    const cartRef = ref(db, `users/${uid}/cart`);
+    const cartRef = ref(db, `customers/${uid}/cart`);
     onValue(cartRef, (snap) => {
       const data = snap.val();
       const remoteItems = Array.isArray(data?.items) ? data.items : [];
@@ -112,7 +112,7 @@ if (typeof window !== 'undefined') {
 export function addToCart({ productId, quantity = 1, color = null, _skipAuth = false, _action = 'add_to_cart' }) {
   if (!_skipAuth) {
     const ok = ensureLoginForCart({ type: _action, productId, quantity, color });
-    if (!ok) return;
+    if (!ok) return false;
   }
 
   const items = getCart();
@@ -122,10 +122,11 @@ export function addToCart({ productId, quantity = 1, color = null, _skipAuth = f
     const next = [...items];
     next[idx] = { ...next[idx], quantity: (next[idx].quantity ?? 0) + quantity };
     setCart(next);
-    return;
+    return true;
   }
 
   setCart([...items, { productId, quantity, color }]);
+  return true;
 }
 
 export function updateCartItem({ productId, color = null, quantity }) {

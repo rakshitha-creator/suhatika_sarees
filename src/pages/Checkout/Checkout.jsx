@@ -4,8 +4,7 @@ import Footer from '../../components/Footer/Footer';
 import { clearCart, getCart, updateCartItem } from '../../data/cart';
 import { getWebsiteProductById } from '../../data/websiteProducts';
 import { getAuthUser } from '../../data/auth';
-import { auth } from '../../lib/firebaseClient';
-import { ref, set } from 'firebase/database';
+import { push, ref, set } from 'firebase/database';
 import { db } from '../../lib/firebaseClient';
 import './Checkout.css';
 
@@ -78,7 +77,6 @@ export default function Checkout() {
   const [isPlacing, setIsPlacing] = useState(false);
   const [placeError, setPlaceError] = useState('');
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
-  const [whatsAppError, setWhatsAppError] = useState('');
 
   useEffect(() => {
     const onChange = () => setItems(getCart());
@@ -142,7 +140,6 @@ export default function Checkout() {
   const placeOrder = async () => {
     if (items.length === 0) return;
     setAttemptedSubmit(true);
-    setWhatsAppError('');
     if (Object.keys(missingFields).length > 0) {
       const first = ['firstName', 'lastName', 'phone', 'email', 'street', 'country', 'city', 'stateName', 'zip'].find(
         (k) => missingFields[k]
@@ -165,56 +162,22 @@ export default function Checkout() {
         return;
       }
 
-      const orderId = `ord_${Date.now()}_${Math.floor(1000 + Math.random() * 9000)}`;
+      const orderRef = push(ref(db, `customers/${uid}/orders`));
+      const orderId = orderRef.key;
+      if (!orderId) {
+        setPlaceError('Unable to place order');
+        return;
+      }
       const paymentMethod = 'Cash on Delivery';
       const address = buildAddressString();
 
-      let idToken = '';
-      try {
-        if (auth.currentUser) idToken = await auth.currentUser.getIdToken();
-      } catch {
-        idToken = '';
-      }
-
-      if (!idToken) {
-        setWhatsAppError('Login token missing.');
+      const normalizedPhone = normalizeIndianPhone(phone);
+      if (!normalizedPhone || normalizedPhone.replace(/\D/g, '').length < 10) {
+        setPlaceError('Please enter a valid phone number.');
         return;
-      } else {
-        try {
-          const normalizedPhone = normalizeIndianPhone(phone);
-          if (!normalizedPhone || normalizedPhone.replace(/\D/g, '').length < 10) {
-            setWhatsAppError('Please enter a valid phone number.');
-            return;
-          }
-
-          const resp = await fetch('http://localhost:5001/api/whatsapp/order-confirmed', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${idToken}`,
-            },
-            body: JSON.stringify({
-              orderId,
-              address,
-              total,
-              phone: normalizedPhone,
-              name: `${firstName} ${lastName}`.trim(),
-            }),
-          });
-
-          if (!resp.ok) {
-            const data = await resp.json().catch(() => null);
-            const detailsText = data?.details ? ` (${JSON.stringify(data.details)})` : '';
-            setWhatsAppError(`${data?.error || 'Unable to send WhatsApp confirmation'} [${resp.status}]${detailsText}`);
-            return;
-          }
-        } catch {
-          setWhatsAppError('Unable to send WhatsApp confirmation (request failed)');
-          return;
-        }
       }
 
-      await set(ref(db, `users/${uid}/orders/${orderId}`), {
+      await set(orderRef, {
         orderId,
         createdAt: new Date().toISOString(),
         status: 'confirmed',
@@ -227,7 +190,7 @@ export default function Checkout() {
         customer: {
           firstName,
           lastName,
-          phone,
+          phone: normalizedPhone,
           email,
         },
         shippingAddress: {
@@ -247,6 +210,20 @@ export default function Checkout() {
           total,
           paymentMethod,
           items,
+          customer: {
+            firstName,
+            lastName,
+            phone: normalizedPhone,
+            email,
+          },
+          shippingAddress: {
+            street,
+            city,
+            state: stateName,
+            zip,
+            country,
+          },
+          address,
         })
       );
 
@@ -435,7 +412,6 @@ export default function Checkout() {
                   {isPlacing ? 'Placing...' : 'Place Order'}
                 </button>
                 {placeError && <div style={{ marginTop: 10, color: '#b91c1c', fontWeight: 600 }}>{placeError}</div>}
-                {whatsAppError && <div style={{ marginTop: 10, color: '#b91c1c', fontWeight: 600 }}>{whatsAppError}</div>}
               </div>
             </section>
 
