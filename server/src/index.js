@@ -2,13 +2,37 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import admin from 'firebase-admin';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const envPath = path.resolve(__dirname, '..', '.env');
+dotenv.config({ path: envPath, override: true });
+
+// eslint-disable-next-line no-console
+console.log('Loaded env file:', envPath);
+// eslint-disable-next-line no-console
+console.log('Loaded env FIREBASE_DATABASE_URL:', process.env.FIREBASE_DATABASE_URL);
 
 function requireEnv(name) {
   const v = process.env[name];
   if (!v) throw new Error(`Missing env var: ${name}`);
   return v;
+}
+
+function sanitizeDatabaseUrl(value) {
+  const raw = String(value || '').trim().replace(/^['"]|['"]$/g, '');
+  if (!raw) return '';
+  try {
+    const u = new URL(raw);
+    u.pathname = '/';
+    u.search = '';
+    u.hash = '';
+    return u.toString();
+  } catch {
+    return raw;
+  }
 }
 
 function initFirebaseAdmin() {
@@ -30,7 +54,7 @@ function initFirebaseAdmin() {
       clientEmail,
       privateKey: privateKey.replace(/\\n/g, '\n'),
     }),
-    databaseURL: process.env.FIREBASE_DATABASE_URL,
+    databaseURL: sanitizeDatabaseUrl(process.env.FIREBASE_DATABASE_URL),
   });
 }
 
@@ -70,14 +94,31 @@ async function sendWhatsappTemplate({ to, templateName, languageCode, parameters
     },
   };
 
-  const resp = await fetch(url, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(body),
-  });
+  const controller = new AbortController();
+  const timeoutMs = Number(process.env.WHATSAPP_TIMEOUT_MS || 15000);
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+  let resp;
+  try {
+    resp = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+  } catch (e) {
+    if (e?.name === 'AbortError') {
+      const err = new Error(`WhatsApp API timeout after ${timeoutMs}ms`);
+      err.statusCode = 504;
+      throw err;
+    }
+    throw e;
+  } finally {
+    clearTimeout(timeout);
+  }
 
   const data = await resp.json().catch(() => null);
   if (!resp.ok) {
@@ -98,7 +139,7 @@ app.get('/health', (_req, res) => {
 });
 
 // Sends WhatsApp order confirmation to the authenticated user
-// Body: { orderId: string, address: string, total: number|string }
+// Body: { orderId: string, address: string, total: number|string, phone?: string, name?: string }
 app.post('/api/whatsapp/order-confirmed', async (req, res) => {
   try {
     const decoded = await verifyFirebaseIdToken(req);
@@ -107,7 +148,7 @@ app.post('/api/whatsapp/order-confirmed', async (req, res) => {
     const templateName = process.env.WHATSAPP_TEMPLATE_NAME || 'order_confirmed';
     const languageCode = process.env.WHATSAPP_TEMPLATE_LANG || 'en_US';
 
-    const { orderId, address, total } = req.body || {};
+    const { orderId, address, total, phone: requestPhone, name: requestName } = req.body || {};
     if (!orderId || !address || total == null) {
       return res.status(400).json({ error: 'Missing orderId/address/total' });
     }
@@ -116,14 +157,16 @@ app.post('/api/whatsapp/order-confirmed', async (req, res) => {
     const snap = await admin.database().ref(`users/${uid}`).get();
     const user = snap.exists() ? snap.val() : null;
 
-    const name = user?.name || '';
-    const phone = user?.phone || '';
+    const name = String(requestName || user?.name || '').trim();
+    const phone = String(requestPhone || user?.phone || '').trim();
 
     if (!phone) {
       return res.status(400).json({ error: 'User phone missing in database' });
     }
 
-    const to = String(phone).replace(/^\+/, '');
+    const to = String(phone)
+      .replace(/[\s\-()]/g, '')
+      .replace(/^\+/, '');
 
     const adminNumber = process.env.WHATSAPP_ADMIN_NUMBER || '+918919607181';
     const adminTo = adminNumber
@@ -134,6 +177,8 @@ app.post('/api/whatsapp/order-confirmed', async (req, res) => {
 
     const params = [name, phone, address, total];
 
+    // eslint-disable-next-line no-console
+    console.log('WA send: customer', { to, orderId });
     const waCustomer = await sendWhatsappTemplate({
       to,
       templateName,
@@ -143,6 +188,8 @@ app.post('/api/whatsapp/order-confirmed', async (req, res) => {
 
     let waAdmin = null;
     if (adminTo) {
+      // eslint-disable-next-line no-console
+      console.log('WA send: admin', { to: adminTo, orderId });
       waAdmin = await sendWhatsappTemplate({
         to: adminTo,
         templateName,

@@ -15,6 +15,16 @@ function formatCurrency(value) {
   return `₹${num.toLocaleString('en-IN')}.00`;
 }
 
+function normalizeIndianPhone(value) {
+  const raw = String(value || '').trim();
+  const digits = raw.replace(/\D/g, '');
+  if (!digits) return '';
+  if (digits.length === 10) return `+91${digits}`;
+  if (digits.length === 12 && digits.startsWith('91')) return `+${digits}`;
+  if (raw.startsWith('+')) return raw;
+  return `+${digits}`;
+}
+
 function OrderItem({ item }) {
   const product = getWebsiteProductById(item.productId);
   const image = product?.images?.[0] ?? '/image.png';
@@ -56,7 +66,6 @@ function OrderItem({ item }) {
 export default function Checkout() {
   const [items, setItems] = useState(() => getCart());
   const [coupon, setCoupon] = useState('');
-  const [payment, setPayment] = useState('card');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
@@ -69,6 +78,7 @@ export default function Checkout() {
   const [isPlacing, setIsPlacing] = useState(false);
   const [placeError, setPlaceError] = useState('');
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
+  const [whatsAppError, setWhatsAppError] = useState('');
 
   useEffect(() => {
     const onChange = () => setItems(getCart());
@@ -132,6 +142,7 @@ export default function Checkout() {
   const placeOrder = async () => {
     if (items.length === 0) return;
     setAttemptedSubmit(true);
+    setWhatsAppError('');
     if (Object.keys(missingFields).length > 0) {
       const first = ['firstName', 'lastName', 'phone', 'email', 'street', 'country', 'city', 'stateName', 'zip'].find(
         (k) => missingFields[k]
@@ -155,8 +166,53 @@ export default function Checkout() {
       }
 
       const orderId = `ord_${Date.now()}_${Math.floor(1000 + Math.random() * 9000)}`;
-      const paymentMethod = payment === 'upi' ? 'UPI' : 'Debit Card';
+      const paymentMethod = 'Cash on Delivery';
       const address = buildAddressString();
+
+      let idToken = '';
+      try {
+        if (auth.currentUser) idToken = await auth.currentUser.getIdToken();
+      } catch {
+        idToken = '';
+      }
+
+      if (!idToken) {
+        setWhatsAppError('Login token missing.');
+        return;
+      } else {
+        try {
+          const normalizedPhone = normalizeIndianPhone(phone);
+          if (!normalizedPhone || normalizedPhone.replace(/\D/g, '').length < 10) {
+            setWhatsAppError('Please enter a valid phone number.');
+            return;
+          }
+
+          const resp = await fetch('http://localhost:5001/api/whatsapp/order-confirmed', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${idToken}`,
+            },
+            body: JSON.stringify({
+              orderId,
+              address,
+              total,
+              phone: normalizedPhone,
+              name: `${firstName} ${lastName}`.trim(),
+            }),
+          });
+
+          if (!resp.ok) {
+            const data = await resp.json().catch(() => null);
+            const detailsText = data?.details ? ` (${JSON.stringify(data.details)})` : '';
+            setWhatsAppError(`${data?.error || 'Unable to send WhatsApp confirmation'} [${resp.status}]${detailsText}`);
+            return;
+          }
+        } catch {
+          setWhatsAppError('Unable to send WhatsApp confirmation (request failed)');
+          return;
+        }
+      }
 
       await set(ref(db, `users/${uid}/orders/${orderId}`), {
         orderId,
@@ -183,33 +239,6 @@ export default function Checkout() {
         },
       });
 
-      let idToken = '';
-      try {
-        if (auth.currentUser) idToken = await auth.currentUser.getIdToken();
-      } catch {
-        idToken = '';
-      }
-
-      if (idToken) {
-        const resp = await fetch('http://localhost:5001/api/whatsapp/order-confirmed', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${idToken}`,
-          },
-          body: JSON.stringify({
-            orderId,
-            address,
-            total,
-          }),
-        });
-
-        if (!resp.ok) {
-          const data = await resp.json().catch(() => null);
-          setPlaceError(data?.error || 'Unable to send WhatsApp confirmation');
-        }
-      }
-
       window.sessionStorage.setItem(
         'order:last',
         JSON.stringify({
@@ -223,8 +252,8 @@ export default function Checkout() {
 
       clearCart();
       window.location.hash = '#/order-complete';
-    } catch {
-      setPlaceError('Unable to place order');
+    } catch (err) {
+      setPlaceError(err?.message ? String(err.message) : 'Unable to place order');
     } finally {
       setIsPlacing(false);
     }
@@ -389,40 +418,10 @@ export default function Checkout() {
 
               <div className="checkout__card">
                 <div className="checkout__card-title">Payment method</div>
-
-                <label className={`checkout__radio ${payment === 'card' ? 'is-active' : ''}`}>
-                  <input type="radio" name="payment" checked={payment === 'card'} onChange={() => setPayment('card')} />
-                  <span>Debit or Credit Card</span>
+                <label className="checkout__radio is-active">
+                  <input type="radio" name="payment" checked readOnly />
+                  <span>Cash on Delivery</span>
                 </label>
-
-                <label className={`checkout__radio ${payment === 'upi' ? 'is-active' : ''}`}>
-                  <input type="radio" name="payment" checked={payment === 'upi'} onChange={() => setPayment('upi')} />
-                  <span>UPI</span>
-                </label>
-
-                {payment === 'card' ? (
-                  <>
-                    <label className="checkout__field">
-                      <span className="checkout__label">Card number</span>
-                      <input className="checkout__input" type="text" placeholder="1234 1234 1234 1234" />
-                    </label>
-                    <div className="checkout__grid2">
-                      <label className="checkout__field">
-                        <span className="checkout__label">Expiration date</span>
-                        <input className="checkout__input" type="text" placeholder="MM/YY" />
-                      </label>
-                      <label className="checkout__field">
-                        <span className="checkout__label">CVC</span>
-                        <input className="checkout__input" type="text" placeholder="CVC code" />
-                      </label>
-                    </div>
-                  </>
-                ) : (
-                  <label className="checkout__field">
-                    <span className="checkout__label">UPI ID</span>
-                    <input className="checkout__input" type="text" placeholder="name@bank" />
-                  </label>
-                )}
 
                 <button
                   type="button"
@@ -436,6 +435,7 @@ export default function Checkout() {
                   {isPlacing ? 'Placing...' : 'Place Order'}
                 </button>
                 {placeError && <div style={{ marginTop: 10, color: '#b91c1c', fontWeight: 600 }}>{placeError}</div>}
+                {whatsAppError && <div style={{ marginTop: 10, color: '#b91c1c', fontWeight: 600 }}>{whatsAppError}</div>}
               </div>
             </section>
 

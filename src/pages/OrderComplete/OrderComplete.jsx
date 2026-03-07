@@ -65,12 +65,6 @@ export default function OrderComplete() {
   const date = orderData?.date ? formatDate(orderData.date) : formatDate(new Date());
   const paymentMethod = orderData?.paymentMethod ?? 'Debit Card';
 
-  const sendWhatsAppUpdate = () => {
-    const text = `Order received!\nOrder code: ${orderCode}\nTotal: ${formatCurrency(total)}`;
-    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
-    window.open(url, '_blank', 'noopener,noreferrer');
-  };
-
   return (
     <div className="order-complete">
       <Header />
@@ -123,11 +117,6 @@ export default function OrderComplete() {
                 </div>
               </div>
 
-              <button type="button" className="order-complete__whatsapp" onClick={sendWhatsAppUpdate}>
-                WhatsApp Update
-              </button>
-
-              <div className="order-complete__hint">To send update of order to the business, click above.</div>
             </div>
           </section>
         </div>
