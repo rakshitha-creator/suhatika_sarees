@@ -22,15 +22,11 @@
 .new-arrival__carousel-wrap {
   position: relative;
   display: grid;
-
-  /* increase horizontal gap */
-  column-gap: 1.8rem;
-
-  /* decrease vertical gap */
-  row-gap: 1.6rem;
-
   grid-template-columns: repeat(4, 1fr);
+  gap: 1.8rem;
   justify-items: center;
+  height: auto;
+  overflow: visible;
 }
 
 .new-arrival__nav {
@@ -209,8 +205,7 @@
 
   .new-arrival__carousel-wrap {
     grid-template-columns: repeat(3, 1fr);
-    column-gap: 1.6rem;
-    row-gap: 1.6rem;
+    gap: 1.6rem;
   }
 }
 
@@ -218,8 +213,7 @@
 
   .new-arrival__carousel-wrap {
     grid-template-columns: repeat(2, 1fr);
-    column-gap: 1.4rem;
-    row-gap: 1.6rem;
+    gap: 1.4rem;
   }
 }
 
@@ -227,7 +221,7 @@
 
   .new-arrival__carousel-wrap {
     grid-template-columns: 1fr;
-    row-gap: 1.6rem;
+    gap: 1.6rem;
   }
 }
 
