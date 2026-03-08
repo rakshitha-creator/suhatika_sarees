@@ -151,4 +151,6 @@ export default function Collections() {
       </div>
     </section>
   );
+
+  
 }
