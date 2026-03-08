@@ -19,7 +19,6 @@
   letter-spacing: -0.02em;
 }
 
-<<<<<<< Updated upstream
 .new-arrival__carousel-wrap {
   position: relative;
   display: grid;
@@ -36,12 +35,6 @@
 
 .new-arrival__nav {
   display: none;
-=======
-.new-arrival__grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.75rem;
->>>>>>> Stashed changes
 }
 
 .new-arrival__carousel {
@@ -50,11 +43,7 @@
 
 .new-arrival__card {
   width: 100%;
-<<<<<<< Updated upstream
   max-width: 280px;
-=======
-  min-width: 0;
->>>>>>> Stashed changes
   background: #fff;
   border-radius: 16px;
   overflow: hidden;
@@ -227,29 +216,18 @@
 
 @media (max-width: 768px) {
 
-<<<<<<< Updated upstream
   .new-arrival__carousel-wrap {
     grid-template-columns: repeat(2, 1fr);
     column-gap: 1.4rem;
     row-gap: 1.6rem;
-=======
-  .new-arrival__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.75rem;
->>>>>>> Stashed changes
   }
 }
 
 @media (max-width: 600px) {
-<<<<<<< Updated upstream
 
   .new-arrival__carousel-wrap {
     grid-template-columns: 1fr;
     row-gap: 1.6rem;
-=======
-  .new-arrival__card {
-    width: 100%;
->>>>>>> Stashed changes
   }
 }
 
