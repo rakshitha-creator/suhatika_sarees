@@ -11,8 +11,13 @@ const SearchIcon = () => (
 );
 
 const collectionsPreview = [
-  { title: 'Tissue Plain Gray Colour Saree With Mustard Border', image: '/collection-6.PNG', href: '#/product/collections_6' },
-  { title: 'Vintage Majantha Saree with Teal Blue Border', image: '/new-1.PNG', href: '#/product/newarrivals_1' },
+  { title: 'Product Label', image: '/image.png', href: '#/collections' },
+  { title: 'Product Label', image: '/image.png', href: '#/collections' },
+  { title: 'Product Label', image: '/image.png', href: '#/collections' },
+  { title: 'Product Label', image: '/image.png', href: '#/collections' },
+  { title: 'Product Label', image: '/image.png', href: '#/collections' },
+  { title: 'Product Label', image: '/image.png', href: '#/collections' },
+  { title: 'Product Label', image: '/image.png', href: '#/collections' },
 ];
 
 export default function Header() {
@@ -88,6 +93,23 @@ export default function Header() {
     { label: 'Collections', href: '#/collections' },
     { label: 'About Us', href: '#/about' },
     { label: 'Contact Us', href: '#/contact' },
+  ];
+
+  const menuGroups = [
+    { title: 'Top', items: ['T-Shirts', 'Polos', 'Shirts', 'Sweatshirts', 'Hoodies', 'Jackets'] },
+    { title: 'Bottom', items: ['Cargos', 'Jeans', 'Pants', 'Shorts'] },
+    { title: 'Accessories', items: ['Bags', 'Caps'] },
+    {
+      title: 'Colours',
+      items: [
+        { label: 'Red', color: '#ef4444' },
+        { label: 'Green', color: '#22c55e' },
+        { label: 'Blue', color: '#3b82f6' },
+        { label: 'Yellow', color: '#f59e0b' },
+        { label: 'Purple', color: '#5D157E' },
+        { label: 'Black', color: '#111827' },
+      ],
+    },
   ];
 
   return (
@@ -203,6 +225,32 @@ export default function Header() {
                 >
                   {item.label}
                 </a>
+              ))}
+            </div>
+
+            <div className="header__menu-groups" aria-label="Menu categories">
+              {menuGroups.map((group) => (
+                <div key={group.title} className="header__menu-group">
+                  <div className="header__menu-group-title">{group.title}</div>
+                  <div className="header__menu-pills">
+                    {group.items.map((pill) => {
+                      const label = typeof pill === 'string' ? pill : pill.label;
+                      const swatchColor = typeof pill === 'string' ? null : pill.color;
+
+                      return (
+                        <a
+                          key={label}
+                          href="#/collections"
+                          className={`header__menu-pill${swatchColor ? ' header__menu-pill--color' : ''}`}
+                          onClick={() => setIsMenuOpen(false)}
+                        >
+                          {swatchColor && <span className="header__menu-pill-swatch" style={{ backgroundColor: swatchColor }} aria-hidden="true" />}
+                          {label}
+                        </a>
+                      );
+                    })}
+                  </div>
+                </div>
               ))}
             </div>
           </div>

@@ -28,24 +28,59 @@ function formatPrice(value) {
   return value.toLocaleString('en-IN');
 }
 
+function pad2(n) {
+  return String(n).padStart(2, '0');
+}
+
 export default function ProductDetail({ productId }) {
   const product = useMemo(() => getWebsiteProductById(productId), [productId]);
 
   const images = product?.images?.length ? product.images : ['/image.png'];
 
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [selectedColor, setSelectedColor] = useState(product?.colors?.[0] ?? '#111827');
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
 
+  const [offerEndsAt, setOfferEndsAt] = useState(() => {
+    return Date.now() + 2 * 24 * 60 * 60 * 1000 + 12 * 60 * 60 * 1000 + 45 * 60 * 1000 + 5 * 1000;
+  });
+  const [timeLeft, setTimeLeft] = useState(() => Math.max(0, offerEndsAt - Date.now()));
+
   useEffect(() => {
     setActiveImageIndex(0);
+    setSelectedColor(product?.colors?.[0] ?? '#111827');
     setQuantity(1);
     setAddedToCart(false);
+    setOfferEndsAt(Date.now() + 2 * 24 * 60 * 60 * 1000 + 12 * 60 * 60 * 1000 + 45 * 60 * 1000 + 5 * 1000);
   }, [productId, product]);
 
   useEffect(() => {
     setAddedToCart(false);
-  }, [quantity]);
+  }, [selectedColor, quantity]);
+
+  useEffect(() => {
+    if (!addedToCart) return;
+    const t = window.setTimeout(() => setAddedToCart(false), 1600);
+    return () => window.clearTimeout(t);
+  }, [addedToCart]);
+
+  useEffect(() => {
+    const t = window.setInterval(() => {
+      const remaining = Math.max(0, offerEndsAt - Date.now());
+      setTimeLeft(remaining);
+    }, 250);
+    return () => window.clearInterval(t);
+  }, [offerEndsAt]);
+
+  const countdown = useMemo(() => {
+    const totalSeconds = Math.floor(timeLeft / 1000);
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    return { days, hours, minutes, seconds };
+  }, [timeLeft]);
 
   const prevImage = (e) => {
     e?.preventDefault?.();
@@ -122,9 +157,51 @@ export default function ProductDetail({ productId }) {
 
             <div className="product-detail__divider" />
 
+            <div className="product-detail__offer">
+              <div className="product-detail__offer-label">Offer expires in:</div>
+              <div className="product-detail__timer">
+                <div className="product-detail__timer-box">
+                  <div className="product-detail__timer-num">{pad2(countdown.days)}</div>
+                  <div className="product-detail__timer-unit">Days</div>
+                </div>
+                <div className="product-detail__timer-box">
+                  <div className="product-detail__timer-num">{pad2(countdown.hours)}</div>
+                  <div className="product-detail__timer-unit">Hours</div>
+                </div>
+                <div className="product-detail__timer-box">
+                  <div className="product-detail__timer-num">{pad2(countdown.minutes)}</div>
+                  <div className="product-detail__timer-unit">Minutes</div>
+                </div>
+                <div className="product-detail__timer-box">
+                  <div className="product-detail__timer-num">{pad2(countdown.seconds)}</div>
+                  <div className="product-detail__timer-unit">Seconds</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="product-detail__divider" />
+
             <div className="product-detail__meta">
               <div className="product-detail__meta-label">Measurements</div>
               <div className="product-detail__meta-value">{product.measurements}</div>
+            </div>
+
+            <div className="product-detail__meta product-detail__meta--colors">
+              <div className="product-detail__meta-label">Choose Color</div>
+              <div className="product-detail__meta-value">{selectedColor === '#111827' ? 'Black' : 'Selected'}</div>
+              <div className="product-detail__colors">
+                {product.colors.map((hex) => (
+                  <button
+                    key={hex}
+                    type="button"
+                    className={`product-detail__color ${selectedColor === hex ? 'is-active' : ''}`}
+                    onClick={() => setSelectedColor(hex)}
+                    aria-label={`Choose color ${hex}`}
+                  >
+                    <span className="product-detail__color-swatch" style={{ backgroundColor: hex }} aria-hidden="true" />
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div className="product-detail__actions">
@@ -157,7 +234,7 @@ export default function ProductDetail({ productId }) {
                 type="button"
                 className="product-detail__add"
                 onClick={() => {
-                  addToCart({ productId: product.id, quantity });
+                  addToCart({ productId: product.id, quantity, color: selectedColor });
                   setAddedToCart(true);
                 }}
               >
@@ -167,7 +244,7 @@ export default function ProductDetail({ productId }) {
                 type="button"
                 className="product-detail__buy"
                 onClick={() => {
-                  addToCart({ productId: product.id, quantity, _action: 'buy_now' });
+                  addToCart({ productId: product.id, quantity, color: selectedColor, _action: 'buy_now' });
                   window.location.hash = '#/checkout';
                 }}
               >
@@ -175,6 +252,18 @@ export default function ProductDetail({ productId }) {
               </button>
             </div>
 
+            <div className="product-detail__divider" />
+
+            <div className="product-detail__footer-meta">
+              <div className="product-detail__footer-meta-row">
+                <span className="product-detail__footer-meta-label">SKU</span>
+                <span className="product-detail__footer-meta-value">{product.sku}</span>
+              </div>
+              <div className="product-detail__footer-meta-row">
+                <span className="product-detail__footer-meta-label">CATEGORY</span>
+                <span className="product-detail__footer-meta-value">{product.category}</span>
+              </div>
+            </div>
           </section>
         </div>
       </main>
