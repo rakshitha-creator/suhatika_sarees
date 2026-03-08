@@ -11,13 +11,8 @@ const SearchIcon = () => (
 );
 
 const collectionsPreview = [
-  { title: 'Product Label', image: '/image.png', href: '#/collections' },
-  { title: 'Product Label', image: '/image.png', href: '#/collections' },
-  { title: 'Product Label', image: '/image.png', href: '#/collections' },
-  { title: 'Product Label', image: '/image.png', href: '#/collections' },
-  { title: 'Product Label', image: '/image.png', href: '#/collections' },
-  { title: 'Product Label', image: '/image.png', href: '#/collections' },
-  { title: 'Product Label', image: '/image.png', href: '#/collections' },
+    { title: 'Tissue Plain Gray Colour Saree With Mustard Border', image: '/collection-6.PNG', href: '#/product/collections_6' },
+  { title: 'Vintage Majantha Saree with Teal Blue Border', image: '/new-1.PNG', href: '#/product/newarrivals_1' },
 ];
 
 export default function Header() {
@@ -95,22 +90,6 @@ export default function Header() {
     { label: 'Contact Us', href: '#/contact' },
   ];
 
-  const menuGroups = [
-    { title: 'Top', items: ['T-Shirts', 'Polos', 'Shirts', 'Sweatshirts', 'Hoodies', 'Jackets'] },
-    { title: 'Bottom', items: ['Cargos', 'Jeans', 'Pants', 'Shorts'] },
-    { title: 'Accessories', items: ['Bags', 'Caps'] },
-    {
-      title: 'Colours',
-      items: [
-        { label: 'Red', color: '#ef4444' },
-        { label: 'Green', color: '#22c55e' },
-        { label: 'Blue', color: '#3b82f6' },
-        { label: 'Yellow', color: '#f59e0b' },
-        { label: 'Purple', color: '#5D157E' },
-        { label: 'Black', color: '#111827' },
-      ],
-    },
-  ];
 
   return (
     <header className="header">
@@ -125,7 +104,7 @@ export default function Header() {
           <img src="/menu-line-horizontal.svg" alt="" aria-hidden="true" width="22" height="22" />
         </button>
         <a href="#/" className="header__brand">
-          Suhatika Sarees
+          <img src="/suhatika logo final.svg" alt="Suhatika Sarees Logo" className="header__logo" />
         </a>
         <nav className="header__nav">
           <a href="#/" className="header__link">Home</a>
@@ -158,7 +137,7 @@ export default function Header() {
                 <div className="header__dropdown-strip" ref={collectionsStripRef}>
                   {collectionsPreview.map((item, idx) => (
                     <a key={`${item.title}-${idx}`} href={item.href} className="header__dropdown-card" role="menuitem">
-                      <span className="header__dropdown-thumb" aria-hidden="true">
+                      <span className={`header__dropdown-thumb ${idx === 1 ? 'header__dropdown-thumb--second' : ''}`} aria-hidden="true">
                         <img src={item.image} alt="" loading="lazy" />
                       </span>
                       <span className="header__dropdown-title">{item.title}</span>
@@ -228,31 +207,7 @@ export default function Header() {
               ))}
             </div>
 
-            <div className="header__menu-groups" aria-label="Menu categories">
-              {menuGroups.map((group) => (
-                <div key={group.title} className="header__menu-group">
-                  <div className="header__menu-group-title">{group.title}</div>
-                  <div className="header__menu-pills">
-                    {group.items.map((pill) => {
-                      const label = typeof pill === 'string' ? pill : pill.label;
-                      const swatchColor = typeof pill === 'string' ? null : pill.color;
-
-                      return (
-                        <a
-                          key={label}
-                          href="#/collections"
-                          className={`header__menu-pill${swatchColor ? ' header__menu-pill--color' : ''}`}
-                          onClick={() => setIsMenuOpen(false)}
-                        >
-                          {swatchColor && <span className="header__menu-pill-swatch" style={{ backgroundColor: swatchColor }} aria-hidden="true" />}
-                          {label}
-                        </a>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-            </div>
+            
           </div>
         </div>
       </div>

@@ -33,6 +33,15 @@
   font-size: 1.5rem;
   text-decoration: none;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+}
+
+.header__logo {
+  height: 2.5rem;
+  width: auto;
+  max-width: 12rem;
+  object-fit: contain;
 }
 
 .header__brand:hover {
@@ -76,7 +85,7 @@
   top: 77px;
   left: 50%;
   transform: translateX(-50%) translateY(6px);
-  width: min(820px, calc(100% - 3rem));
+  width: min(350px, calc(100% - 3rem));
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -124,6 +133,7 @@
   scroll-behavior: smooth;
   position: relative;
   z-index: 1;
+  justify-content: center;
 }
 
 .header__dropdown-strip::-webkit-scrollbar {
@@ -142,11 +152,15 @@
 
 .header__dropdown-thumb {
   width: 160px;
-  height: 96px;
+  height: 180px;
   border-radius: 14px 14px 0 0;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.45);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.header__dropdown-thumb--second {
+  height: 180px;
 }
 
 .header__dropdown-thumb img {
