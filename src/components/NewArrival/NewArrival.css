@@ -11,6 +11,8 @@
   padding: 0 1.5rem;
 }
 
+
+
 .new-arrival__title {
   margin: 0 0 1.5rem;
   font-size: 2rem;
@@ -20,6 +22,14 @@
 }
 
 <<<<<<< Updated upstream
+.new-arrival__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  max-height: 620px;
+  overflow-y: auto;
+  padding-right: 6px;
+=======
 .new-arrival__carousel-wrap {
   position: relative;
   display: grid;
@@ -36,24 +46,19 @@
 
 .new-arrival__nav {
   display: none;
-=======
-.new-arrival__grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.75rem;
->>>>>>> Stashed changes
 }
 
 .new-arrival__carousel {
   display: contents;
+>>>>>>> Stashed changes
 }
 
 .new-arrival__card {
   width: 100%;
 <<<<<<< Updated upstream
-  max-width: 280px;
-=======
   min-width: 0;
+=======
+  max-width: 280px;
 >>>>>>> Stashed changes
   background: #fff;
   border-radius: 16px;
@@ -217,44 +222,42 @@
 }
 
 @media (max-width: 1024px) {
-
-  .new-arrival__carousel-wrap {
-    grid-template-columns: repeat(3, 1fr);
-    column-gap: 1.6rem;
-    row-gap: 1.6rem;
+  .new-arrival__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 768px) {
-
 <<<<<<< Updated upstream
+  .new-arrival__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+=======
+
   .new-arrival__carousel-wrap {
     grid-template-columns: repeat(2, 1fr);
     column-gap: 1.4rem;
     row-gap: 1.6rem;
-=======
-  .new-arrival__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.75rem;
 >>>>>>> Stashed changes
   }
 }
 
 @media (max-width: 600px) {
 <<<<<<< Updated upstream
-
-  .new-arrival__carousel-wrap {
-    grid-template-columns: 1fr;
-    row-gap: 1.6rem;
-=======
   .new-arrival__card {
     width: 100%;
->>>>>>> Stashed changes
   }
 }
 
 @media (max-width: 480px) {
+=======
 
+  .new-arrival__carousel-wrap {
+    grid-template-columns: 1fr;
+    row-gap: 1.6rem;
+  }
+  
+>>>>>>> Stashed changes
   .new-arrival {
     padding: 2rem 0 2.5rem;
   }

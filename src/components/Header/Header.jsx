@@ -2,6 +2,7 @@ import './Header.css';
 
 import { useEffect, useRef, useState } from 'react';
 import { getCart } from '../../data/cart';
+import { getAuthUser, logout } from '../../data/auth';
 
 const SearchIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -21,6 +22,8 @@ export default function Header() {
   const [canScrollCollectionsLeft, setCanScrollCollectionsLeft] = useState(false);
   const [canScrollCollectionsRight, setCanScrollCollectionsRight] = useState(false);
   const [cartCount, setCartCount] = useState(0);
+  const [isAccountOpen, setIsAccountOpen] = useState(false);
+  const accountWrapRef = useRef(null);
 
   const openCart = () => {
     setIsMenuOpen(false);
@@ -42,6 +45,24 @@ export default function Header() {
       window.removeEventListener('storage', compute);
     };
   }, []);
+
+  useEffect(() => {
+    if (!isAccountOpen) return;
+
+    const onDown = (e) => {
+      const wrap = accountWrapRef.current;
+      if (!wrap) return;
+      if (wrap.contains(e.target)) return;
+      setIsAccountOpen(false);
+    };
+
+    window.addEventListener('mousedown', onDown);
+    window.addEventListener('touchstart', onDown);
+    return () => {
+      window.removeEventListener('mousedown', onDown);
+      window.removeEventListener('touchstart', onDown);
+    };
+  }, [isAccountOpen]);
 
   const updateCollectionsScrollState = () => {
     const el = collectionsStripRef.current;
@@ -90,6 +111,17 @@ export default function Header() {
     { label: 'Contact Us', href: '#/contact' },
   ];
 
+  const user = getAuthUser();
+  const displayName = user?.displayName || user?.firstName || user?.name || 'Account';
+  const displayPhone = user?.phone || user?.phoneNumber || '';
+  const displayEmail = user?.email || '';
+
+  const onLogout = () => {
+    logout();
+    setIsAccountOpen(false);
+    window.location.hash = '#/login';
+  };
+
 
   return (
     <header className="header">
@@ -104,11 +136,7 @@ export default function Header() {
           <img src="/menu-line-horizontal.svg" alt="" aria-hidden="true" width="22" height="22" />
         </button>
         <a href="#/" className="header__brand">
-<<<<<<< Updated upstream
           <img src="/suhatika logo final.svg" alt="Suhatika Sarees Logo" className="header__logo" />
-=======
-          <img src="/suhatika logo final.svg" alt="Suhatika Sarees" className="header__logo-sub" />
->>>>>>> Stashed changes
         </a>
         <nav className="header__nav">
           <a href="#/" className="header__link">Home</a>
@@ -181,9 +209,42 @@ export default function Header() {
           <button type="button" className="header__icon-btn" aria-label="Wishlist">
             <img src="/love.svg" alt="" aria-hidden="true" width="22" height="22" />
           </button>
-          <button type="button" className="header__icon-btn" aria-label="Account">
-            <img src="/user.svg" alt="" aria-hidden="true" width="22" height="22" />
-          </button>
+          <div className="header__account" ref={accountWrapRef}>
+            <button
+              type="button"
+              className="header__icon-btn"
+              aria-label="Account"
+              aria-expanded={isAccountOpen}
+              onClick={() => setIsAccountOpen((v) => !v)}
+            >
+              <img src="/user.svg" alt="" aria-hidden="true" width="22" height="22" />
+            </button>
+            {isAccountOpen && (
+              <div className="header__account-card" role="dialog" aria-label="Account details">
+                <div className="header__account-title">Account</div>
+                <div className="header__account-row">
+                  <div className="header__account-label">Name</div>
+                  <div className="header__account-value">{displayName}</div>
+                </div>
+                {displayPhone ? (
+                  <div className="header__account-row">
+                    <div className="header__account-label">Phone</div>
+                    <div className="header__account-value">{displayPhone}</div>
+                  </div>
+                ) : null}
+                {displayEmail ? (
+                  <div className="header__account-row">
+                    <div className="header__account-label">Email</div>
+                    <div className="header__account-value">{displayEmail}</div>
+                  </div>
+                ) : null}
+
+                <button type="button" className="header__account-logout" onClick={onLogout}>
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
           <button type="button" className="header__icon-btn header__icon-btn--cart" aria-label="Cart" onClick={openCart}>
             <img src="/shopping bag.svg" alt="" aria-hidden="true" width="22" height="22" />
             {cartCount > 0 && <span className="header__cart-badge" aria-hidden="true">{cartCount}</span>}

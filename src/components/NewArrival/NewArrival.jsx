@@ -4,20 +4,9 @@ import { addToCart } from '../../data/cart';
 import { websiteProducts } from '../../data/websiteProducts';
 
 const newArrivalsProducts = websiteProducts.filter((p) => String(p.id).startsWith('newarrivals_'));
-const collectionsProducts = websiteProducts.filter((p) => String(p.id).startsWith('collections_'));
+const products = newArrivalsProducts;
 
-const products = (() => {
-  const seen = new Set();
-  const merged = [...newArrivalsProducts, ...collectionsProducts];
 
-  return merged.filter((p) => {
-    const id = String(p?.id ?? '');
-    if (!id) return false;
-    if (seen.has(id)) return false;
-    seen.add(id);
-    return true;
-  });
-})();
 
 const HeartIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">

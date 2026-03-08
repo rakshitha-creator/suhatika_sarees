@@ -141,7 +141,7 @@ export default function Collections() {
                     key={`${activeCategory}-${product.id}`}
                     product={product}
                     rowId={activeCategory}
-                    hideDetails={activeCategory === 'vintage'}
+                    hideDetails={false}
                   />
                 ))}
               </div>
@@ -151,4 +151,6 @@ export default function Collections() {
       </div>
     </section>
   );
+
+  
 }
