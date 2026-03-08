@@ -45,6 +45,108 @@
   color: #fff;
 }
 
+.collections__split {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.collections__left {
+  position: sticky;
+  top: 92px;
+  align-self: start;
+}
+
+.collections__types {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 14px 14px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  margin-bottom: 0;
+}
+
+.collections__types-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 10px;
+}
+
+.collections__types-buttons {
+  display: grid;
+  gap: 10px;
+}
+
+.collections__type-btn {
+  width: 100%;
+  height: 44px;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #f3f4f6;
+  color: #111827;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.collections__type-btn.is-active {
+  border-color: rgba(93, 21, 126, 0.45);
+  background: rgba(93, 21, 126, 0.12);
+  color: var(--color-primary);
+}
+
+.collections__featured {
+  display: grid;
+  gap: 1rem;
+}
+
+.collections__featured-card {
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+}
+
+.collections__featured-img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  display: block;
+}
+
+.collections__featured-meta {
+  padding: 10px 12px 12px;
+}
+
+.collections__featured-kicker {
+  font-size: 0.78rem;
+  font-weight: 900;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.collections__featured-name {
+  font-size: 0.92rem;
+  font-weight: 900;
+  color: #111827;
+  line-height: 1.2;
+}
+
+.collections__scroll {
+  background: transparent;
+  border-radius: 16px;
+  max-height: 620px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.collections__scroll-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
 .collections__carousel-wrap {
   position: relative;
 }
@@ -256,6 +358,24 @@
   .collections__header {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .collections__split {
+    grid-template-columns: 1fr;
+  }
+
+  .collections__left {
+    position: static;
+  }
+
+  .collections__scroll {
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+
+  .collections__scroll-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

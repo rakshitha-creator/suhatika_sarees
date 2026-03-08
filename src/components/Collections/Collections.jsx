@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import './Collections.css';
 import { addToCart } from '../../data/cart';
 import { websiteProducts } from '../../data/websiteProducts';
@@ -23,7 +23,7 @@ const ChevronRightIcon = () => (
   </svg>
 );
 
-function ProductCard({ product, rowId }) {
+function ProductCard({ product, rowId, hideDetails = false }) {
   const [imageIndex, setImageIndex] = useState(0);
   const images = Array.isArray(product.images) && product.images.length ? product.images : ['/image.png'];
   const currentImage = images[imageIndex % images.length];
@@ -63,40 +63,44 @@ function ProductCard({ product, rowId }) {
           <ChevronRightIcon />
         </button>
       </div>
-      <div className="collections__card-details">
-        <h3 className="collections__card-name">{product.name}</h3>
-        <div className="collections__card-price">
-          <span className="collections__card-price-current">₹ {product.price}/-</span>
-          <span className="collections__card-price-original">₹ {product.originalPrice}</span>
+      {!hideDetails && (
+        <div className="collections__card-details">
+          <h3 className="collections__card-name">{product.name}</h3>
+          <div className="collections__card-price">
+            <span className="collections__card-price-current">₹ {product.price}/-</span>
+            <span className="collections__card-price-original">₹ {product.originalPrice}</span>
+          </div>
+          <button
+            type="button"
+            className="collections__card-cart"
+            aria-label="Add to cart"
+            onClick={(e) => {
+              e.stopPropagation();
+              addToCart({ productId: product.id, quantity: 1, color: product.colors?.[0] ?? null });
+            }}
+          >
+            <img className="collections__card-cart-icon" src="/shopping bag-add.svg" alt="" />
+          </button>
         </div>
-        <button
-          type="button"
-          className="collections__card-cart"
-          aria-label="Add to cart"
-          onClick={(e) => {
-            e.stopPropagation();
-            addToCart({ productId: product.id, quantity: 1, color: product.colors?.[0] ?? null });
-          }}
-        >
-          <img className="collections__card-cart-icon" src="/shopping bag-add.svg" alt="" />
-        </button>
-      </div>
+      )}
     </article>
   );
 }
 
-const CarouselRow = ({ scrollRef, rowId }) => (
-  <div className="collections__carousel-wrap">
-    <div className="collections__carousel" ref={scrollRef}>
-      {products.map((product) => (
-        <ProductCard key={`${rowId}-${product.id}`} product={product} rowId={rowId} />
-        ))}
-    </div>
-  </div>
-);
-
 export default function Collections() {
-  const scrollRef1 = useRef(null);
+  const [activeCategory, setActiveCategory] = useState('tissue');
+
+  const tissueProducts = useMemo(() => products.filter((p) => String(p?.name ?? '').toLowerCase().includes('tissue')), []);
+  const vintageProducts = useMemo(
+    () => websiteProducts.filter((p) => String(p.id).startsWith('newarrivals_')).slice(0, 5),
+    []
+  );
+
+  const filteredProducts = useMemo(() => {
+    if (activeCategory === 'tissue') return tissueProducts;
+    if (activeCategory === 'vintage') return vintageProducts;
+    return products;
+  }, [activeCategory, tissueProducts, vintageProducts]);
 
   return (
     <section className="collections">
@@ -105,7 +109,45 @@ export default function Collections() {
           <h2 className="collections__title">Our Signature Collections</h2>
           <a href="#/collections" className="collections__view-all">View All</a>
         </div>
-        <CarouselRow scrollRef={scrollRef1} rowId={1} />
+
+        <div className="collections__split">
+          <aside className="collections__left">
+            <div className="collections__types">
+              <div className="collections__types-title">Types</div>
+              <div className="collections__types-buttons">
+                <button
+                  type="button"
+                  className={`collections__type-btn${activeCategory === 'tissue' ? ' is-active' : ''}`}
+                  onClick={() => setActiveCategory('tissue')}
+                >
+                  Tissue
+                </button>
+                <button
+                  type="button"
+                  className={`collections__type-btn${activeCategory === 'vintage' ? ' is-active' : ''}`}
+                  onClick={() => setActiveCategory('vintage')}
+                >
+                  Vintage
+                </button>
+              </div>
+            </div>
+          </aside>
+
+          <div className="collections__right">
+            <div className="collections__scroll" aria-label="Collection items">
+              <div className="collections__scroll-grid">
+                {filteredProducts.map((product) => (
+                  <ProductCard
+                    key={`${activeCategory}-${product.id}`}
+                    product={product}
+                    rowId={activeCategory}
+                    hideDetails={activeCategory === 'vintage'}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

@@ -1,9 +1,23 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import './NewArrival.css';
 import { addToCart } from '../../data/cart';
 import { websiteProducts } from '../../data/websiteProducts';
 
-const products = websiteProducts.filter((p) => String(p.id).startsWith('newarrivals_'));
+const newArrivalsProducts = websiteProducts.filter((p) => String(p.id).startsWith('newarrivals_'));
+const collectionsProducts = websiteProducts.filter((p) => String(p.id).startsWith('collections_'));
+
+const products = (() => {
+  const seen = new Set();
+  const merged = [...newArrivalsProducts, ...collectionsProducts];
+
+  return merged.filter((p) => {
+    const id = String(p?.id ?? '');
+    if (!id) return false;
+    if (seen.has(id)) return false;
+    seen.add(id);
+    return true;
+  });
+})();
 
 const HeartIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -23,7 +37,7 @@ const ChevronRightIcon = () => (
   </svg>
 );
 
-function ProductCard({ product, onScroll }) {
+function ProductCard({ product }) {
   const [imageIndex, setImageIndex] = useState(0);
   const images = Array.isArray(product.images) && product.images.length ? product.images : ['/image.png'];
   const currentImage = images[imageIndex % images.length];
@@ -86,30 +100,14 @@ function ProductCard({ product, onScroll }) {
 }
 
 export default function NewArrival() {
-  const scrollRef = useRef(null);
-
-  const scroll = (direction) => {
-    if (!scrollRef.current) return;
-    const amount = 320;
-    scrollRef.current.scrollBy({ left: direction === 'left' ? -amount : amount, behavior: 'smooth' });
-  };
-
   return (
     <section className="new-arrival">
       <div className="new-arrival__inner">
         <h2 className="new-arrival__title">New Arrived</h2>
-        <div className="new-arrival__carousel-wrap">
-          <button type="button" className="new-arrival__nav new-arrival__nav--left" onClick={() => scroll('left')} aria-label="Scroll left">
-            <ChevronLeftIcon />
-          </button>
-          <div className="new-arrival__carousel" ref={scrollRef}>
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} onScroll={scroll} />
-            ))}
-          </div>
-          <button type="button" className="new-arrival__nav new-arrival__nav--right" onClick={() => scroll('right')} aria-label="Scroll right">
-            <ChevronRightIcon />
-          </button>
+        <div className="new-arrival__grid">
+          {products.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
         </div>
       </div>
     </section>

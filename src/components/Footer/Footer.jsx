@@ -11,7 +11,9 @@ export default function Footer() {
       <div className="footer__content">
         <div className="footer__inner">
           <div className="footer__brand">
-            <div className="footer__logo" aria-hidden="true" />
+            <a href="#/" className="footer__logo-link">
+              <img src="/suhatika logo final.svg" alt="Suhatika Sarees" className="footer__logo" />
+            </a>
             <h3 className="footer__brand-name">
               Suhatika<br />Sarees
             </h3>

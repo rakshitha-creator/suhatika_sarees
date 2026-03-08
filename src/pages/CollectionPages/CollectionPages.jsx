@@ -1,7 +1,6 @@
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import Collections from '../../components/Collections/Collections';
-import NewArrival from '../../components/NewArrival/NewArrival';
 import './CollectionPages.css'; 
 
 export default function CollectionPages() {
@@ -64,8 +63,6 @@ export default function CollectionPages() {
             </a>
           </div>
         </section>
-
-        <NewArrival />
 
       </main>
 

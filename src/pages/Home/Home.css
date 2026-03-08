@@ -19,24 +19,9 @@
 
 
 /* NEW ARRIVAL */
-.home .new-arrival__carousel-wrap {
-  justify-content: flex-start;
-  gap: 0;
-}
-
-.home .new-arrival__carousel {
-  flex: 0 1 auto;
-  width: min(1216px, 100%);
-  margin: 0 auto;
-  justify-content: flex-start;
-  gap: 2.5rem;
-  padding: 0.25rem 1.5rem;
-  scroll-padding-left: 1.5rem;
-}
 
 .home .new-arrival__card {
   background: rgba(255, 255, 255, 0.65);
-  width: clamp(200px, 22vw, 240px);
 }
 
 .home .new-arrival {
@@ -96,16 +81,6 @@
 }
 
 @media (max-width: 600px) {
-  .home .new-arrival__carousel {
-    padding: 0.25rem 0;
-    justify-content: flex-start;
-    gap: 0;
-  }
-
-  .home .new-arrival__card {
-    width: 100%;
-  }
-
   .home .collections__carousel {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

@@ -2,9 +2,6 @@ import './Header.css';
 
 import { useEffect, useRef, useState } from 'react';
 import { getCart } from '../../data/cart';
-import { getAuthUser, setAuthUser } from '../../data/auth';
-import { signOut } from 'firebase/auth';
-import { auth } from '../../lib/firebaseClient';
 
 const SearchIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -21,22 +18,13 @@ const collectionsPreview = [
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const collectionsStripRef = useRef(null);
-  const accountWrapRef = useRef(null);
   const [canScrollCollectionsLeft, setCanScrollCollectionsLeft] = useState(false);
   const [canScrollCollectionsRight, setCanScrollCollectionsRight] = useState(false);
   const [cartCount, setCartCount] = useState(0);
-  const [isAccountOpen, setIsAccountOpen] = useState(false);
-  const [authUser, setAuthUserState] = useState(() => getAuthUser());
 
   const openCart = () => {
     setIsMenuOpen(false);
-    setIsAccountOpen(false);
     window.location.hash = '#/cart';
-  };
-
-  const openAccount = () => {
-    setIsMenuOpen(false);
-    setIsAccountOpen((v) => !v);
   };
 
   useEffect(() => {
@@ -54,33 +42,6 @@ export default function Header() {
       window.removeEventListener('storage', compute);
     };
   }, []);
-
-  useEffect(() => {
-    const onAuth = () => setAuthUserState(getAuthUser());
-    window.addEventListener('auth:change', onAuth);
-    return () => window.removeEventListener('auth:change', onAuth);
-  }, []);
-
-  useEffect(() => {
-    if (!isAccountOpen) return;
-
-    const onDocDown = (e) => {
-      const wrap = accountWrapRef.current;
-      if (!wrap) return;
-      if (!wrap.contains(e.target)) setIsAccountOpen(false);
-    };
-
-    const onKey = (e) => {
-      if (e.key === 'Escape') setIsAccountOpen(false);
-    };
-
-    document.addEventListener('mousedown', onDocDown);
-    window.addEventListener('keydown', onKey);
-    return () => {
-      document.removeEventListener('mousedown', onDocDown);
-      window.removeEventListener('keydown', onKey);
-    };
-  }, [isAccountOpen]);
 
   const updateCollectionsScrollState = () => {
     const el = collectionsStripRef.current;
@@ -143,7 +104,11 @@ export default function Header() {
           <img src="/menu-line-horizontal.svg" alt="" aria-hidden="true" width="22" height="22" />
         </button>
         <a href="#/" className="header__brand">
+<<<<<<< Updated upstream
           <img src="/suhatika logo final.svg" alt="Suhatika Sarees Logo" className="header__logo" />
+=======
+          <img src="/suhatika logo final.svg" alt="Suhatika Sarees" className="header__logo-sub" />
+>>>>>>> Stashed changes
         </a>
         <nav className="header__nav">
           <a href="#/" className="header__link">Home</a>
@@ -216,81 +181,9 @@ export default function Header() {
           <button type="button" className="header__icon-btn" aria-label="Wishlist">
             <img src="/love.svg" alt="" aria-hidden="true" width="22" height="22" />
           </button>
-          <div className="header__account" ref={accountWrapRef}>
-            <button
-              type="button"
-              className="header__icon-btn"
-              aria-label="Account"
-              aria-haspopup="menu"
-              aria-expanded={isAccountOpen}
-              onClick={openAccount}
-            >
-              <img src="/user.svg" alt="" aria-hidden="true" width="22" height="22" />
-            </button>
-
-            {isAccountOpen && (
-              <div className="header__account-menu" role="menu" aria-label="Account menu">
-                {authUser ? (
-                  <>
-                    <div className="header__account-title">Account</div>
-                    <div className="header__account-row">
-                      <span className="header__account-label">Name</span>
-                      <span className="header__account-value">{authUser.name || '—'}</span>
-                    </div>
-                    <div className="header__account-row">
-                      <span className="header__account-label">Phone</span>
-                      <span className="header__account-value">{authUser.phone || '—'}</span>
-                    </div>
-                    <div className="header__account-row">
-                      <span className="header__account-label">Email</span>
-                      <span className="header__account-value">{authUser.email || '—'}</span>
-                    </div>
-                    <button
-                      type="button"
-                      className="header__account-logout"
-                      onClick={async () => {
-                        try {
-                          await signOut(auth);
-                        } catch {
-                          // ignore
-                        }
-                        setAuthUser(null);
-                        try {
-                          window.localStorage.setItem('suhatika:cart', JSON.stringify([]));
-                          window.dispatchEvent(new CustomEvent('cart:change'));
-                        } catch {
-                          // ignore
-                        }
-                        setIsAccountOpen(false);
-                        window.location.hash = '#/';
-                      }}
-                    >
-                      Logout
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <a
-                      href="#/login"
-                      className="header__account-link"
-                      role="menuitem"
-                      onClick={() => setIsAccountOpen(false)}
-                    >
-                      Login
-                    </a>
-                    <a
-                      href="#/signup"
-                      className="header__account-link header__account-link--primary"
-                      role="menuitem"
-                      onClick={() => setIsAccountOpen(false)}
-                    >
-                      Sign Up
-                    </a>
-                  </>
-                )}
-              </div>
-            )}
-          </div>
+          <button type="button" className="header__icon-btn" aria-label="Account">
+            <img src="/user.svg" alt="" aria-hidden="true" width="22" height="22" />
+          </button>
           <button type="button" className="header__icon-btn header__icon-btn--cart" aria-label="Cart" onClick={openCart}>
             <img src="/shopping bag.svg" alt="" aria-hidden="true" width="22" height="22" />
             {cartCount > 0 && <span className="header__cart-badge" aria-hidden="true">{cartCount}</span>}
