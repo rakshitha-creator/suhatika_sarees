@@ -21,57 +21,33 @@
 
 .new-arrival__carousel-wrap {
   position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0;
+  display: grid;
+
+  /* increase horizontal gap */
+  column-gap: 1.8rem;
+
+  /* decrease vertical gap */
+  row-gap: 1.6rem;
+
+  grid-template-columns: repeat(4, 1fr);
+  justify-items: center;
 }
 
 .new-arrival__nav {
-  flex-shrink: 0;
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #fff;
-  border: 1px solid #e5e5e5;
-  border-radius: 50%;
-  color: #6b7280;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-}
-
-.new-arrival__nav:hover {
-  background: #fff;
-  color: #1a1a1a;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.new-arrival__carousel {
-  flex: 1;
-  display: flex;
-  gap: 1.25rem;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  padding: 0.25rem 1.5rem;
-  scroll-padding-left: 1.5rem;
-}
-
-.new-arrival__carousel::-webkit-scrollbar {
   display: none;
 }
 
+.new-arrival__carousel {
+  display: contents;
+}
+
 .new-arrival__card {
-  flex-shrink: 0;
-  width: clamp(220px, 72vw, 280px);
+  width: 100%;
+  max-width: 280px;
   background: #fff;
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-  scroll-snap-align: start;
   transition: box-shadow 0.2s;
   display: flex;
   flex-direction: column;
@@ -81,7 +57,6 @@
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* Image area: white bg, image has 10px radius on all sides */
 .new-arrival__card-image-wrap {
   position: relative;
   aspect-ratio: 4 / 4;
@@ -126,7 +101,6 @@
   color: #e53935;
 }
 
-/* Left/right arrows on image hover */
 .new-arrival__card-arrow {
   position: absolute;
   top: 50%;
@@ -168,7 +142,6 @@
   transform: translateY(-50%) scale(0.96);
 }
 
-/* Details area: light grey (same as card), minimal top padding */
 .new-arrival__card-details {
   padding: 2px 18px 16px;
   background: #fff;
@@ -224,11 +197,6 @@
   grid-column: 2;
   grid-row: 2;
   align-self: end;
-  transition: background 0.2s;
-}
-
-.new-arrival__card-cart:hover {
-  background: transparent;
 }
 
 .new-arrival__card-cart-icon {
@@ -238,51 +206,38 @@
 }
 
 @media (max-width: 1024px) {
-  .new-arrival {
-    padding: 2.5rem 0 3.25rem;
-  }
 
-  .new-arrival__title {
-    font-size: 1.8rem;
+  .new-arrival__carousel-wrap {
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 1.6rem;
+    row-gap: 1.6rem;
   }
 }
 
 @media (max-width: 768px) {
-  .new-arrival__inner {
-    padding: 0 1rem;
-  }
 
   .new-arrival__carousel-wrap {
-    gap: 0.25rem;
-  }
-
-  .new-arrival__nav {
-    display: none;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 1.4rem;
+    row-gap: 1.6rem;
   }
 }
 
 @media (max-width: 600px) {
-  .new-arrival__carousel {
-    padding: 0.25rem 0;
-    gap: 0;
-  }
 
-  .new-arrival__card {
-    width: 100%;
-    scroll-snap-align: start;
+  .new-arrival__carousel-wrap {
+    grid-template-columns: 1fr;
+    row-gap: 1.6rem;
   }
 }
 
 @media (max-width: 480px) {
+
   .new-arrival {
     padding: 2rem 0 2.5rem;
   }
 
   .new-arrival__title {
     font-size: 1.5rem;
-  }
-
-  .new-arrival__card {
-    width: calc(100% - 2rem);
   }
 }
