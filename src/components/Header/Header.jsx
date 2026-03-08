@@ -104,11 +104,7 @@ export default function Header() {
           <img src="/menu-line-horizontal.svg" alt="" aria-hidden="true" width="22" height="22" />
         </button>
         <a href="#/" className="header__brand">
-<<<<<<< Updated upstream
-          <img src="/suhatika logo final.svg" alt="Suhatika Sarees Logo" className="header__logo" />
-=======
           <img src="/suhatika logo final.svg" alt="Suhatika Sarees" className="header__logo-sub" />
->>>>>>> Stashed changes
         </a>
         <nav className="header__nav">
           <a href="#/" className="header__link">Home</a>

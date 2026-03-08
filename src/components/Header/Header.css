@@ -31,17 +31,6 @@
   flex-shrink: 0;
   padding: 0;
   text-decoration: none;
-<<<<<<< Updated upstream
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-}
-
-.header__logo {
-  height: 2.5rem;
-  width: auto;
-  max-width: 12rem;
-=======
   margin-right: auto;
 }
 
@@ -56,7 +45,6 @@
   max-height: 64px;
   height: auto;
   display: block;
->>>>>>> Stashed changes
   object-fit: contain;
 }
 
