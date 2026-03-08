@@ -104,7 +104,7 @@ export default function NewArrival() {
     <section className="new-arrival">
       <div className="new-arrival__inner">
         <h2 className="new-arrival__title">New Arrived</h2>
-        <div className="new-arrival__grid">
+        <div className="new-arrival__carousel-wrap">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
